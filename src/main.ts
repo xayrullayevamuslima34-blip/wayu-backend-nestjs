@@ -1,7 +1,17 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { configureSwagger } from './config/swagger.config';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);}
+  configureSwagger(app);
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    transform: true,
+    forbidNonWhitelisted: true,
+  }));
+  await app.listen(8888, () => console.log('Server is up and running'));
+}
+
 bootstrap();
