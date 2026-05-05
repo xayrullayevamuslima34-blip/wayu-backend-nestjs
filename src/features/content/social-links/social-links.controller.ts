@@ -2,39 +2,73 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query,
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiConsumes, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { storageOptions } from '../../../config/multer.config';
+import { storageOptions } from '@/config/multer.config';
 import fs from 'fs';
-import { GetAllSocialLinksResponse } from './queries/get-all-social-links/get-all-social-links.response';
-import { GetAllSocialLinksRequest } from './queries/get-all-social-links/get-all-social-links.request';
-import { GetOneSocialLinksResponse } from './queries/get-one-social-links/get-one-social-links.response';
-import { GetOneSocialLinksRequest } from './queries/get-one-social-links/get-one-social-links.request';
-import { CreateSocialLinksResponse } from './commands/create-social-links/create-social-links.response';
-import { CreateSocialLinksRequest } from './commands/create-social-links/create-social-links.request';
-import { CreateSocialLinksCommand } from './commands/create-social-links/create-social-links.command';
-import { UpdateSocialLinksResponse } from './commands/update-social-links/update-social-links.response';
-import { UpdateSocialLinksRequest } from './commands/update-social-links/update-social-links.request';
-import { DeleteSocialLinksRequest } from './commands/delete-social-links/delete-social-links.request';
-
+import {
+  GetAllSocialLinksPublicResponse
+} from '@/features/content/social-links/public/queries/get-all-social-links/get-all-social-links.public.response';
+import {
+  GetAllSocialLinksPublicRequest
+} from '@/features/content/social-links/public/queries/get-all-social-links/get-all-social-links.public.request';
+import {
+  GetAllSocialLinksPublicFilters
+} from '@/features/content/social-links/public/queries/get-all-social-links/get-all-social-links.public.filters';
+import {
+  GetOneSocialLinksPublicResponse
+} from '@/features/content/social-links/public/queries/get-one-social-links/get-one-social-links.public.response';
+import {
+  GetOneSocialLinksPublicRequest
+} from '@/features/content/social-links/public/queries/get-one-social-links/get-one-social-links.public.request';
+import {
+  DeleteSocialLinksAdminRequest
+} from '@/features/content/social-links/admin/commands/delete-social-links/delete-social-links.admin.request';
+import {
+  UpdateSocialLinksAdminRequest
+} from '@/features/content/social-links/admin/commands/update-social-links/update-social-links.admin.request';
+import {
+  UpdateSocialLinksAdminResponse
+} from '@/features/content/social-links/admin/commands/update-social-links/update-social-links.admin.response';
+import {
+  CreateSocialLinksAdminCommand
+} from '@/features/content/social-links/admin/commands/create-social-links/create-social-links.admin.command';
+import {
+  CreateSocialLinksAdminRequest
+} from '@/features/content/social-links/admin/commands/create-social-links/create-social-links.admin.request';
+import {
+  CreateSocialLinksAdminResponse
+} from '@/features/content/social-links/admin/commands/create-social-links/create-social-links.admin.response';
+import {
+  GetAllSocialLinksAdminRequest
+} from '@/features/content/social-links/admin/queries/get-all-social-links/get-all-social-links.admin.request';
+import {
+  GetAllSocialLinksAdminResponse
+} from '@/features/content/social-links/admin/queries/get-all-social-links/get-all-social-links.admin.response';
+import {
+  GetOneSocialLinksAdminResponse
+} from '@/features/content/social-links/admin/queries/get-one-social-links/get-one-social-links.admin.response';
+import {
+  GetOneSocialLinksAdminRequest
+} from '@/features/content/social-links/admin/queries/get-one-social-links/get-one-social-links.admin.request';
 class GetAllSocialLinksFilters {
 }
 
-@Controller('social-links')
-export class SocialLinksController {
+@Controller('admin/social-links')
+export class SocialLinksAdminController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
   ) {}
 
   @Get('list')
-  @ApiOkResponse({ type: [GetAllSocialLinksResponse] })
+  @ApiOkResponse({ type: [GetAllSocialLinksAdminResponse] })
   async getAll(@Query() filters: GetAllSocialLinksFilters) {
-    return await this.queryBus.execute(new GetAllSocialLinksRequest(filters));
+    return await this.queryBus.execute(new GetAllSocialLinksAdminRequest(filters));
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: GetOneSocialLinksResponse })
+  @ApiOkResponse({ type: GetOneSocialLinksAdminResponse })
   async getOne(@Param('id', ParseIntPipe) id: number) {
-    const query = new GetOneSocialLinksRequest();
+    const query = new GetOneSocialLinksAdminRequest();
     query.id = id;
     return await this.queryBus.execute(query);
   }
@@ -42,12 +76,12 @@ export class SocialLinksController {
   @Post('create')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('icon', { storage: storageOptions, limits: { fileSize: 1024 * 1024 * 6 } }))
-  @ApiCreatedResponse({ type: CreateSocialLinksResponse })
+  @ApiCreatedResponse({ type: CreateSocialLinksAdminResponse })
   async create(
-    @Body() payload: CreateSocialLinksRequest,
+    @Body() payload: CreateSocialLinksAdminRequest,
     @UploadedFile() icon: Express.Multer.File,
   ) {
-    const cmd = new CreateSocialLinksCommand(
+    const cmd = new CreateSocialLinksAdminCommand(
       payload.title,
       icon,
       payload.link,
@@ -63,13 +97,13 @@ export class SocialLinksController {
   @Patch('update/:id')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('icon', { storage: storageOptions, limits: { fileSize: 1024 * 1024 * 6 } }))
-  @ApiOkResponse({ type: UpdateSocialLinksResponse })
+  @ApiOkResponse({ type: UpdateSocialLinksAdminResponse })
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() payload: UpdateSocialLinksRequest,
+    @Body() payload: UpdateSocialLinksAdminRequest,
     @UploadedFile() icon?: Express.Multer.File,
   ) {
-    const cmd = new UpdateSocialLinksRequest();
+    const cmd = new UpdateSocialLinksAdminRequest();
     cmd.id = id;
     cmd.title = payload.title;
     cmd.link = payload.link;
@@ -84,8 +118,33 @@ export class SocialLinksController {
 
   @Delete('delete/:id')
   async delete(@Param('id', ParseIntPipe) id: number) {
-    const cmd = new DeleteSocialLinksRequest();
+    const cmd = new DeleteSocialLinksAdminRequest();
     cmd.id = id;
     return await this.commandBus.execute(cmd);
   }
+}
+
+
+@Controller('public/social-links')
+export class SocialLinksPublicController {
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {
+  }
+
+  @Get('list')
+  @ApiOkResponse({ type: [GetAllSocialLinksPublicResponse] })
+  async getAll(@Query() filters: GetAllSocialLinksPublicFilters) {
+    return await this.queryBus.execute(new GetAllSocialLinksPublicRequest(filters));
+  }
+
+  @Get(':id')
+  @ApiOkResponse({ type: GetOneSocialLinksPublicResponse })
+  async getOne(@Param('id', ParseIntPipe) id: number) {
+    const query = new GetOneSocialLinksPublicRequest();
+    query.id = id;
+    return await this.queryBus.execute(query);
+  }
+
 }

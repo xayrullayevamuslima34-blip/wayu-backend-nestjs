@@ -12,37 +12,46 @@ import {
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiConsumes, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { storageOptions } from '../../../config/multer.config';
+import { storageOptions } from '@/config/multer.config';
 import fs from 'fs';
-import { CreateNewsResponse } from './admin/commands/create-news/create-news.response';
-import { CreateNewsCommand } from './admin/commands/create-news/create-news.command';
-import { UpdateNewsResponse } from './admin/commands/update-news/update-news.response';
-import { UpdateNewsCommand } from './admin/commands/update-news/update-news.command';
-import { DeleteNewsRequest } from './admin/commands/delete-news/delete-news.request';
-import { GetAllNewsResponse } from './admin/queries/get-all-news/get-all-news.response';
-import { GetAllNewsRequest } from './admin/queries/get-all-news/get-all-news.request';
-import { GetOneNewsResponse } from './admin/queries/get-one-news/get-one-news.response';
-import { GetOneNewsRequest } from './admin/queries/get-one-news/get-one-news.request';
-import { GetAllNewsFilters } from './admin/queries/get-all-news/get-all-news.filter';
-import { CreateNewsRequest } from './admin/commands/create-news/create-news.request';
+import { CreateNewsAdminResponse } from './admin/commands/create-news/create-news.admin.response';
+import { CreateNewsAdminCommand } from './admin/commands/create-news/create-news.admin.command';
+import { UpdateNewsAdminResponse } from './admin/commands/update-news/update-news.admin.response';
+import { UpdateNewsAdminCommand } from './admin/commands/update-news/update-news.admin.command';
+import { DeleteNewsAdminRequest } from './admin/commands/delete-news/delete-news.admin.request';
+import { GetAllNewsAdminResponse } from './admin/queries/get-all-news/get-all-news.admin.response';
+import { GetAllNewsAdminRequest } from './admin/queries/get-all-news/get-all-news.admin.request';
+import { GetOneNewsAdminResponse } from './admin/queries/get-one-news/get-one-news.admin.response';
+import { GetOneNewsAdminRequest } from './admin/queries/get-one-news/get-one-news.admin.request';
+import { CreateNewsAdminRequest } from './admin/commands/create-news/create-news.admin.request';
+import { GetAllNewsAdminFilters } from '@/features/news/news/admin/queries/get-all-news/get-all-news.admin.filters';
+import {
+  GetAllNewsPublicResponse
+} from '@/features/news/news/public/queries/get-all-news/get-all-news.public.response';
+import { GetAllNewsPublicRequest } from '@/features/news/news/public/queries/get-all-news/get-all-news.public.request';
+import {
+  GetOneNewsPublicResponse
+} from '@/features/news/news/public/queries/get-one-news/get-one-news.public.response';
+import { GetOneNewsPublicRequest } from '@/features/news/news/public/queries/get-one-news/get-one-news.public.request';
+import { GetAllNewsPublicFilters } from '@/features/news/news/public/queries/get-all-news/get-all-news.public.filters';
 
-@Controller('news/')
-export class NewsController {
+@Controller('admin/news')
+export class NewsAdminController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
   ) {}
 
   @Get("list")
-  @ApiOkResponse({ type: [GetAllNewsResponse] })
-  async getAll(@Query() filters: GetAllNewsFilters) {
-    return await this.queryBus.execute(new GetAllNewsRequest(filters));
+  @ApiOkResponse({ type: [GetAllNewsAdminResponse] })
+  async getAll(@Query() filters: GetAllNewsAdminFilters) {
+    return await this.queryBus.execute(new GetAllNewsAdminRequest(filters));
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: GetOneNewsResponse })
+  @ApiOkResponse({ type: GetOneNewsAdminResponse })
   async getOne(@Param('id', ParseIntPipe) id: number) {
-    const query = new GetOneNewsRequest();
+    const query = new GetOneNewsAdminRequest();
     query.id = id;
     return await this.queryBus.execute(query);
   }
@@ -50,12 +59,12 @@ export class NewsController {
   @Post('create')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image', { storage: storageOptions, limits: { fileSize: 1024 * 1024 * 6 } }))
-  @ApiCreatedResponse({ type: CreateNewsResponse })
+  @ApiCreatedResponse({ type: CreateNewsAdminResponse })
   async create(
-    @Body() payload: CreateNewsRequest,
+    @Body() payload: CreateNewsAdminRequest,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    const cmd = new CreateNewsCommand(
+    const cmd = new CreateNewsAdminCommand(
       payload.categoryId,
       payload.title,
       image,
@@ -75,13 +84,13 @@ export class NewsController {
   @Patch('update/:id')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image', { storage: storageOptions, limits: { fileSize: 1024 * 1024 * 6 } }))
-  @ApiOkResponse({ type: UpdateNewsResponse })
+  @ApiOkResponse({ type: UpdateNewsAdminResponse })
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() payload: UpdateNewsCommand,
+    @Body() payload: UpdateNewsAdminCommand,
     @UploadedFile() image?: Express.Multer.File,
   ) {
-    const cmd = new UpdateNewsCommand(
+    const cmd = new UpdateNewsAdminCommand(
       id,
       payload.categoryId,
       payload.countryId,
@@ -101,9 +110,32 @@ export class NewsController {
 
   @Delete('delete/:id')
   async delete(@Param('id', ParseIntPipe) id: number) {
-    const cmd = new DeleteNewsRequest();
+    const cmd = new DeleteNewsAdminRequest();
     cmd.id = id;
     return await this.commandBus.execute(cmd);
   }
 
+}
+
+
+@Controller('public/news')
+export class NewsPublicController {
+  constructor(
+    private readonly queryBus: QueryBus,
+  ) {
+  }
+
+  @Get("list")
+  @ApiOkResponse({ type: [GetAllNewsPublicResponse] })
+  async getAll(@Query() filters: GetAllNewsPublicFilters) {
+    return await this.queryBus.execute(new GetAllNewsPublicRequest(filters));
+  }
+
+  @Get(':id')
+  @ApiOkResponse({ type: GetOneNewsPublicResponse })
+  async getOne(@Param('id', ParseIntPipe) id: number) {
+    const query = new GetOneNewsPublicRequest();
+    query.id = id;
+    return await this.queryBus.execute(query);
+  }
 }

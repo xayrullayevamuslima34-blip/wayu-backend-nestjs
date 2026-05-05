@@ -2,50 +2,68 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Branch } from './branches/branches.entity';
 import { Representative } from './representatives/representatives.entity';
-import { RepresentativesController } from './representatives/representatives.controller';
-import { BranchesController } from './branches/branches.controller';
-import { GetAllBranchesHandler } from './branches/queries/get-all-branches/get-all-branches.handler';
-import { GetOneBranchesHandler } from './branches/queries/get-one-branches/get-one-branches.handler';
-import { CreateBranchesHandler } from './branches/commands/create-branches/create-branches.handler';
-import { UpdateBranchesHandler } from './branches/commands/update-branches/update-branches.handler';
-import { DeleteBranchesHandler } from './branches/commands/delete-branches/delete-branches.handler';
 import {
-  GetAllRepresentativesHandler,
-} from './representatives/queries/get-all-representatives/get-all-representatives.handler';
+  RepresentativesAdminController,
+  RepresentativesPublicController,
+} from './representatives/representatives.controller';
+import { BranchesAdminController } from './branches/branches.controller';
+import { GetAllBranchesAdminHandler } from './branches/admin/queries/get-all-branches/get-all-branches.admin.handler';
+import { GetOneBranchesAdminHandler } from './branches/admin/queries/get-one-branches/get-one-branches.admin.handler';
+import { CreateBranchesAdminHandler } from './branches/admin/commands/create-branches/create-branches.admin.handler';
+import { UpdateBranchesAdminHandler } from './branches/admin/commands/update-branches/update-branches.admin.handler';
+import { DeleteBranchesAdminHandler } from './branches/admin/commands/delete-branches/delete-branches.admin.handler';
 import {
-  GetOneRepresentativesHandler,
-} from './representatives/queries/get-one-representatives/get-one-representatives.handler';
+  GetAllRepresentativesAdminHandler,
+} from './representatives/admin/queries/get-all-representatives/get-all-representatives.admin.handler';
 import {
-  CreateRepresentativesHandler,
-} from './representatives/commands/create-representatives/create-representatives.handler';
+  GetOneRepresentativesAdminHandler,
+} from './representatives/admin/queries/get-one-representatives/get-one-representatives.admin.handler';
 import {
-  UpdateRepresentativesHandler,
-} from './representatives/commands/update-representatives/update-representatives.handler';
+  CreateRepresentativesAdminHandler,
+} from './representatives/admin/commands/create-representatives/create-representatives.admin.handler';
 import {
-  DeleteRepresentativesHandler,
-} from './representatives/commands/delete-representatives/delete-representatives.handler';
+  UpdateRepresentativesAdminHandler,
+} from './representatives/admin/commands/update-representatives/update-representatives.admin.handler';
+import {
+  DeleteRepresentativesAdminHandler,
+} from './representatives/admin/commands/delete-representatives/delete-representatives.admin.handler';
 import { ConfigModule } from '@nestjs/config';
+import { BooksPublicController } from '@/features/library/books/books.controller';
+import {
+  GetAllBooksPublicHandler,
+} from '@/features/library/books/public/queries/get-all-books/get-all-books.public.handler';
+import {
+  GetAllBranchesPublicHandler,
+} from '@/features/organization/branches/public/queries/get-all-branches/get-all-branches.public.handler';
+import {
+  GetAllRepresentativesPublicHandler,
+} from '@/features/organization/representatives/public/queries/get-all-representatives/get-all-representatives.public.handler';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Branch, Representative]),
-  ConfigModule],
+    ConfigModule],
 
   controllers: [
-    BranchesController,
-    RepresentativesController,
+    BranchesAdminController, BooksPublicController,
+    RepresentativesAdminController, RepresentativesPublicController,
   ],
 
   providers: [
-    GetAllBranchesHandler,
-    GetOneBranchesHandler,
-    CreateBranchesHandler,
-    UpdateBranchesHandler,
-    DeleteBranchesHandler,
-    GetAllRepresentativesHandler,
-    GetOneRepresentativesHandler,
-    CreateRepresentativesHandler,
-    UpdateRepresentativesHandler,
-    DeleteRepresentativesHandler,
+    GetAllBranchesAdminHandler,
+    GetOneBranchesAdminHandler,
+    CreateBranchesAdminHandler,
+    UpdateBranchesAdminHandler,
+    DeleteBranchesAdminHandler,
+    GetAllBranchesPublicHandler,
+    GetAllBranchesPublicHandler,
+
+    GetAllRepresentativesAdminHandler,
+    GetOneRepresentativesAdminHandler,
+    CreateRepresentativesAdminHandler,
+    UpdateRepresentativesAdminHandler,
+    DeleteRepresentativesAdminHandler,
+    GetAllRepresentativesPublicHandler,
+    GetAllRepresentativesPublicHandler,
   ],
 
 })

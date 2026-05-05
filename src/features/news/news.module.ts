@@ -1,60 +1,86 @@
 import { Module } from '@nestjs/common';
-import { NewsCategoryController } from './news-category/news-category.controller';
-import { CreateNewsCategoryHandler } from './news-category/commands/create-news-category/create-news-category.handler';
 import {
-  GetAllNewsCategoriesHandler,
-} from './news-category/queries/get-all-news-categories/get-all-news-categories.handler';
+  NewsCategoryAdminController,
+  NewsCategoryPublicController,
+} from './news-category/news-category.controller';
 import {
-  DeleteNewsCategoriesHandler,
-} from './news-category/commands/delete-news-category/delete-news-category.handler';
+  CreateNewsCategoryAdminHandler,
+} from './news-category/admin/commands/create-news-category/create-news-category.admin.handler';
+import {
+  GetAllNewsCategoriesAdminHandler,
+} from './news-category/admin/queries/get-all-news-categories/get-all-news-categories.admin.handler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NewsCategories } from './news-category/news-categories.entity';
 import { News } from './news/news.entity';
-import { CreateNewsHandler } from './news/admin/commands/create-news/create-news.handler';
-import { NewsController } from './news/news.controller';
-import { GetOneNewsHandler } from './news/admin/queries/get-one-news/get-one-news.handler';
-import { UpdateNewsHandler } from './news/admin/commands/update-news/update-news.handler';
-import { DeleteNewsHandler } from './news/admin/commands/delete-news/delete-news.handler';
-import { GetAllNewsHandler } from './news/admin/queries/get-all-news/get-all-news.handler';
-import { GetOneNewsCategoriesHandler } from './news-category/queries/get-one-news-category/get-one-news.handler';
-import {
-  UpdateNewsCategoriesHandler,
-} from './news-category/commands/update-news-category/update-news-category.handler';
-import { TagsController } from './tags/tags.controller';
+import { CreateNewsAdminHandler } from './news/admin/commands/create-news/create-news.admin.handler';
+import { NewsAdminController, NewsPublicController } from './news/news.controller';
+import { GetOneNewsAdminHandler } from './news/admin/queries/get-one-news/get-one-news.admin.handler';
+import { UpdateNewsAdminHandler } from './news/admin/commands/update-news/update-news.admin.handler';
+import { DeleteNewsAdminHandler } from './news/admin/commands/delete-news/delete-news.admin.handler';
+import { GetAllNewsAdminHandler } from './news/admin/queries/get-all-news/get-all-news.admin.handler';
+import { TagsAdminController, TagsPublicController } from './tags/tags.controller';
 import { Tags } from './tags/tags.entity';
-import { GetAllTagsHandler } from './tags/queries/get-all-tags/get-all-tags.handler';
-import { GetOneTagsHandler } from './tags/queries/get-one-tags/get-one-tags.handler';
-import { CreateTagsHandler } from './tags/commands/create-tags/create-tags-handler';
-import { UpdateTagsHandler } from './tags/commands/update-tags/update-tags.handler';
-import { DeleteTagsHandler } from './tags/commands/delete-tags/delete-tags-handler';
+import { GetAllTagsAdminHandler } from './tags/admin/queries/get-all-tags/get-all-tags.admin.handler';
+import { GetOneTagsAdminHandler } from './tags/admin/queries/get-one-tags/get-one-tags.admin.handler';
+import { CreateTagsAdminHandler } from './tags/admin/commands/create-tags/create-tags.admin.handler';
+import { UpdateTagsAdminHandler } from './tags/admin/commands/update-tags/update-tags.admin.handler';
+import { DeleteTagsAdminHandler } from './tags/admin/commands/delete-tags/delete-tags.admin.handler';
 import { ConfigModule } from '@nestjs/config';
+import {
+  GetAllNewsCategoriesPublicHandler,
+} from '@/features/news/news-category/public/queries/get-all-news-categories/get-all-news-categories.public.handler';
+import {
+  GetOneNewsCategoryAdminHandler,
+} from '@/features/news/news-category/admin/queries/get-one-news-category/get-one-news-category.admin.handler';
+import {
+  UpdateNewsCategoryAdminHandler,
+} from '@/features/news/news-category/admin/commands/update-news-category/update-news-category.admin.handler';
+import {
+  DeleteNewsCategoryAdminHandler,
+} from '@/features/news/news-category/admin/commands/delete-news-category/delete-news-category.admin.handler';
+import {
+  GetOneNewsCategoryPublicHandler,
+} from '@/features/news/news-category/public/queries/get-one-news-category/get-one-news-category.public.handler';
+import { GetAllNewsPublicHandler } from '@/features/news/news/public/queries/get-all-news/get-all-news.public.handler';
+import { GetOneNewsPublicHandler } from '@/features/news/news/public/queries/get-one-news/get-one-news.public.handler';
+import { GetAllTagsPublicHandler } from '@/features/news/tags/public/queries/get-all-tags/get-all-tags.public.handler';
+import { GetOneTagsPublicHandler } from '@/features/news/tags/public/queries/get-one-tags/get-one-tags.public.handler';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([News, NewsCategories, Tags]),
-    ConfigModule
+    ConfigModule,
   ],
 
-  controllers: [NewsController,
-    NewsCategoryController,
-    TagsController],
+  controllers: [NewsAdminController, NewsPublicController,
+    NewsCategoryAdminController, NewsCategoryPublicController,
+    TagsAdminController, TagsPublicController,
+  ],
 
   providers: [
-    GetAllNewsHandler,
-    GetOneNewsHandler,
-    CreateNewsHandler,
-    UpdateNewsHandler,
-    DeleteNewsHandler,
-    GetAllNewsCategoriesHandler,
-    GetOneNewsCategoriesHandler,
-    CreateNewsCategoryHandler,
-    UpdateNewsCategoriesHandler,
-    DeleteNewsCategoriesHandler,
-    GetAllTagsHandler,
-    GetOneTagsHandler,
-    CreateTagsHandler,
-    UpdateTagsHandler,
-    DeleteTagsHandler,
+    GetAllNewsAdminHandler,
+    GetOneNewsAdminHandler,
+    CreateNewsAdminHandler,
+    UpdateNewsAdminHandler,
+    DeleteNewsAdminHandler,
+    GetAllNewsPublicHandler,
+    GetOneNewsPublicHandler,
+
+    GetAllNewsCategoriesAdminHandler,
+    GetOneNewsCategoryAdminHandler,
+    CreateNewsCategoryAdminHandler,
+    UpdateNewsCategoryAdminHandler,
+    DeleteNewsCategoryAdminHandler,
+    GetAllNewsCategoriesPublicHandler,
+    GetOneNewsCategoryPublicHandler,
+
+    GetAllTagsAdminHandler,
+    GetOneTagsAdminHandler,
+    CreateTagsAdminHandler,
+    UpdateTagsAdminHandler,
+    DeleteTagsAdminHandler,
+    GetAllTagsPublicHandler,
+    GetOneTagsPublicHandler,
   ],
 })
 

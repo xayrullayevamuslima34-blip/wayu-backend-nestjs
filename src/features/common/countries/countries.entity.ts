@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany,  } from 'typeorm';
-import {BaseModel} from "../../../core/base.model";
+import {BaseModel} from "@/core/base.model";
 import { Branch } from '../../organization/branches/branches.entity';
 import type {Relation} from 'typeorm';
 import { News } from '../../news/news/news.entity';

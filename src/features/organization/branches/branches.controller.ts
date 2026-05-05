@@ -1,43 +1,59 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
-import { GetAllBranchesResponse } from './queries/get-all-branches/get-all-branches.response';
-import { GetAllBranchesFilters } from './queries/get-all-branches/get-all-branches.filters';
-import { GetAllBranchesRequest } from './queries/get-all-branches/get-all-branches.request';
-import { GetOneBranchesResponse } from './queries/get-one-branches/get-one-branches.response';
-import { GetOneBranchesRequest } from './queries/get-one-branches/get-one-branches.request';
-import { CreateBranchesResponse } from './commands/create-branches/create-branches.response';
-import { CreateBranchesRequest } from './commands/create-branches/create-branches.request';
-import { CreateBranchesCommand } from './commands/create-branches/create-branches.command';
-import { UpdateBranchesResponse } from './commands/update-branches/update-branches.response';
-import { UpdateBranchesRequest } from './commands/update-branches/update-branches.request';
-import { DeleteBranchesRequest } from './commands/delete-branches/delete-branches.request';
+import { GetAllBranchesAdminResponse } from './admin/queries/get-all-branches/get-all-branches.admin.response';
+import { GetAllBranchesAdminFilters } from './admin/queries/get-all-branches/get-all-branches.admin.filters';
+import { GetAllBranchesAdminRequest } from './admin/queries/get-all-branches/get-all-branches.admin.request';
+import { GetOneBranchesAdminResponse } from './admin/queries/get-one-branches/get-one-branches.admin.response';
+import { GetOneBranchesAdminRequest } from './admin/queries/get-one-branches/get-one-branches.admin.request';
+import { CreateBranchesAdminResponse } from './admin/commands/create-branches/create-branches.admin.response';
+import { CreateBranchesAdminRequest } from './admin/commands/create-branches/create-branches.admin.request';
+import { CreateBranchesAdminCommand } from './admin/commands/create-branches/create-branches.admin.command';
+import { UpdateBranchesAdminResponse } from './admin/commands/update-branches/update-branches.admin.response';
+import { UpdateBranchesAdminRequest } from './admin/commands/update-branches/update-branches.admin.request';
+import { DeleteBranchesAdminRequest } from './admin/commands/delete-branches/delete-branches.admin.request';
+import {
+  GetAllBranchesPublicResponse,
+} from '@/features/organization/branches/public/queries/get-all-branches/get-all-branches.public.response';
+import {
+  GetAllBranchesPublicFilters,
+} from '@/features/organization/branches/public/queries/get-all-branches/get-all-branches.public.filters';
+import {
+  GetAllBranchesPublicRequest,
+} from '@/features/organization/branches/public/queries/get-all-branches/get-all-branches.public.request';
+import {
+  GetOneBranchesPublicResponse,
+} from '@/features/organization/branches/public/queries/get-one-branches/get-one-branches.public.response';
+import {
+  GetOneBranchesPublicRequest,
+} from '@/features/organization/branches/public/queries/get-one-branches/get-one-branches.public.request';
 
-@Controller('branches')
-export class BranchesController {
+@Controller('admin/branches')
+export class BranchesAdminController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) {}
+  ) {
+  }
 
   @Get('list')
-  @ApiOkResponse({ type: [GetAllBranchesResponse] })
-  async getAll(@Query() filters: GetAllBranchesFilters) {
-    return await this.queryBus.execute(new GetAllBranchesRequest(filters));
+  @ApiOkResponse({ type: [GetAllBranchesAdminResponse] })
+  async getAll(@Query() filters: GetAllBranchesAdminFilters) {
+    return await this.queryBus.execute(new GetAllBranchesAdminRequest(filters));
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: GetOneBranchesResponse })
+  @ApiOkResponse({ type: GetOneBranchesAdminResponse })
   async getOne(@Param('id', ParseIntPipe) id: number) {
-    const query = new GetOneBranchesRequest();
+    const query = new GetOneBranchesAdminRequest();
     query.id = id;
     return await this.queryBus.execute(query);
   }
 
   @Post('create')
-  @ApiCreatedResponse({ type: CreateBranchesResponse })
-  async create(@Body() payload: CreateBranchesRequest) {
-    const cmd = new CreateBranchesCommand(
+  @ApiCreatedResponse({ type: CreateBranchesAdminResponse })
+  async create(@Body() payload: CreateBranchesAdminRequest) {
+    const cmd = new CreateBranchesAdminCommand(
       payload.countryId,
       payload.representativeId,
       payload.city,
@@ -49,12 +65,12 @@ export class BranchesController {
   }
 
   @Patch('update/:id')
-  @ApiOkResponse({ type: UpdateBranchesResponse })
+  @ApiOkResponse({ type: UpdateBranchesAdminResponse })
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() payload: UpdateBranchesRequest,
+    @Body() payload: UpdateBranchesAdminRequest,
   ) {
-    const cmd = new UpdateBranchesRequest();
+    const cmd = new UpdateBranchesAdminRequest();
     cmd.id = id;
     cmd.countryId = payload.countryId;
     cmd.representativeId = payload.representativeId;
@@ -67,8 +83,31 @@ export class BranchesController {
 
   @Delete('delete/:id')
   async delete(@Param('id', ParseIntPipe) id: number) {
-    const cmd = new DeleteBranchesRequest();
+    const cmd = new DeleteBranchesAdminRequest();
     cmd.id = id;
     return await this.commandBus.execute(cmd);
+  }
+}
+
+
+@Controller('public/branches')
+export class BranchesPublicController {
+  constructor(
+    private readonly queryBus: QueryBus,
+  ) {
+  }
+
+  @Get('list')
+  @ApiOkResponse({ type: [GetAllBranchesPublicResponse] })
+  async getAll(@Query() filters: GetAllBranchesPublicFilters) {
+    return await this.queryBus.execute(new GetAllBranchesPublicRequest(filters));
+  }
+
+  @Get(':id')
+  @ApiOkResponse({ type: GetOneBranchesPublicResponse })
+  async getOne(@Param('id', ParseIntPipe) id: number) {
+    const query = new GetOneBranchesPublicRequest();
+    query.id = id;
+    return await this.queryBus.execute(query);
   }
 }

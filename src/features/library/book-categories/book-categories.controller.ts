@@ -1,53 +1,91 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
-import { GetAllBookCategoriesResponse } from './queries/get-all-book-categories/get-all-book-categories.response';
-import { GetAllBookCategoriesFilters } from './queries/get-all-book-categories/get-all-book-categories.filters';
-import { GetAllBookCategoriesRequest } from './queries/get-all-book-categories/get-all-book-categories.request';
-import { GetOneBookCategoriesResponse } from './queries/get-one-book-categories/get-one-book-categories.response';
-import { GetOneBookCategoriesRequest } from './queries/get-one-book-categories/get-one-book-categories.request';
-import { CreateBookCategoriesResponse } from './commands/create-book-categories/create-book-categories.response';
-import { CreateBookCategoriesRequest } from './commands/create-book-categories/create-book-categories.request';
-import { CreateBookCategoriesCommand } from './commands/create-book-categories/create-book-categories.command';
-import { UpdateBookCategoriesResponse } from './commands/update-book-categories/update-book-categories.response';
-import { UpdateBookCategoriesRequest } from './commands/update-book-categories/update-book-categories.request';
-import { DeleteBookCategoriesRequest } from './commands/delete-book-categories/delete-book-categories.request';
+import {
+  GetAllBookCategoriesAdminResponse,
+} from './admin/queries/get-all-book-categories/get-all-book-categories.admin.response';
+import {
+  GetAllBookCategoriesAdminFilters,
+} from './admin/queries/get-all-book-categories/get-all-book-categories.admin.filters';
+import {
+  GetAllBookCategoriesAdminRequest,
+} from './admin/queries/get-all-book-categories/get-all-book-categories.admin.request';
+import {
+  GetOneBookCategoriesAdminResponse,
+} from './admin/queries/get-one-book-categories/get-one-book-categories.admin.response';
+import {
+  GetOneBookCategoriesAdminRequest,
+} from './admin/queries/get-one-book-categories/get-one-book-categories.admin.request';
+import {
+  CreateBookCategoriesAdminResponse,
+} from './admin/commands/create-book-categories/create-book-categories.admin.response';
+import {
+  CreateBookCategoriesAdminRequest,
+} from './admin/commands/create-book-categories/create-book-categories.admin.request';
+import {
+  CreateBookCategoriesAdminCommand,
+} from './admin/commands/create-book-categories/create-book-categories.admin.command';
+import {
+  UpdateBookCategoriesAdminResponse,
+} from './admin/commands/update-book-categories/update-book-categories.admin.response';
+import {
+  UpdateBookCategoriesAdminRequest,
+} from './admin/commands/update-book-categories/update-book-categories.admin.request';
+import {
+  DeleteBookCategoriesAdminRequest,
+} from './admin/commands/delete-book-categories/delete-book-categories.admin.request';
+import {
+  GetAllBookCategoriesPublicResponse,
+} from '@/features/library/book-categories/public/queries/get-all-book-categories/get-all-book-categories.public.response';
+import {
+  GetAllBookCategoriesPublicFilters,
+} from '@/features/library/book-categories/public/queries/get-all-book-categories/get-all-book-categories.public.filters';
+import {
+  GetAllBookCategoriesPublicRequest,
+} from '@/features/library/book-categories/public/queries/get-all-book-categories/get-all-book-categories.public.request';
+import {
+  GetOneBookCategoriesPublicResponse,
+} from '@/features/library/book-categories/public/queries/get-one-book-categories/get-one-book-categories.public.response';
+import {
+  GetOneBookCategoriesPublicRequest,
+} from '@/features/library/book-categories/public/queries/get-one-book-categories/get-one-book-categories.public.request';
 
-@Controller('book-categories')
-export class BookCategoriesController {
+@Controller('admin/book-categories')
+export class BookCategoriesAdminController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) {}
+  ) {
+  }
 
   @Get('list')
-  @ApiOkResponse({ type: [GetAllBookCategoriesResponse] })
-  async getAll(@Query() filters: GetAllBookCategoriesFilters) {
-    return await this.queryBus.execute(new GetAllBookCategoriesRequest(filters));
+  @ApiOkResponse({ type: [GetAllBookCategoriesAdminResponse] })
+  async getAll(@Query() filters: GetAllBookCategoriesAdminFilters) {
+    return await this.queryBus.execute(new GetAllBookCategoriesAdminRequest(filters));
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: GetOneBookCategoriesResponse })
+  @ApiOkResponse({ type: GetOneBookCategoriesAdminResponse })
   async getOne(@Param('id', ParseIntPipe) id: number) {
-    const query = new GetOneBookCategoriesRequest();
+    const query = new GetOneBookCategoriesAdminRequest();
     query.id = id;
     return await this.queryBus.execute(query);
   }
 
   @Post('create')
-  @ApiCreatedResponse({ type: CreateBookCategoriesResponse })
-  async create(@Body() payload: CreateBookCategoriesRequest) {
-    const cmd = new CreateBookCategoriesCommand(payload.title);
+  @ApiCreatedResponse({ type: CreateBookCategoriesAdminResponse })
+  async create(@Body() payload: CreateBookCategoriesAdminRequest) {
+    const cmd = new CreateBookCategoriesAdminCommand(payload.title);
     return await this.commandBus.execute(cmd);
   }
 
   @Patch('update/:id')
-  @ApiOkResponse({ type: UpdateBookCategoriesResponse })
+  @ApiOkResponse({ type: UpdateBookCategoriesAdminResponse })
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() payload: UpdateBookCategoriesRequest,
+    @Body() payload: UpdateBookCategoriesAdminRequest,
   ) {
-    const cmd = new UpdateBookCategoriesRequest();
+    const cmd = new UpdateBookCategoriesAdminRequest();
     cmd.id = id;
     cmd.title = payload.title;
     return await this.commandBus.execute(cmd);
@@ -55,8 +93,32 @@ export class BookCategoriesController {
 
   @Delete('delete/:id')
   async delete(@Param('id', ParseIntPipe) id: number) {
-    const cmd = new DeleteBookCategoriesRequest();
+    const cmd = new DeleteBookCategoriesAdminRequest();
     cmd.id = id;
     return await this.commandBus.execute(cmd);
   }
+}
+
+
+@Controller('public/book-categories')
+export class BookCategoriesPublicController {
+  constructor(
+    private readonly queryBus: QueryBus,
+  ) {
+  }
+
+  @Get('list')
+  @ApiOkResponse({ type: [GetAllBookCategoriesPublicResponse] })
+  async getAll(@Query() filters: GetAllBookCategoriesPublicFilters) {
+    return await this.queryBus.execute(new GetAllBookCategoriesPublicRequest(filters));
+  }
+
+  @Get(':id')
+  @ApiOkResponse({ type: GetOneBookCategoriesPublicResponse })
+  async getOne(@Param('id', ParseIntPipe) id: number) {
+    const query = new GetOneBookCategoriesPublicRequest();
+    query.id = id;
+    return await this.queryBus.execute(query);
+  }
+
 }

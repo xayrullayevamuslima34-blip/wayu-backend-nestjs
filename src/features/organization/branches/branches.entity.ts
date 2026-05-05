@@ -4,7 +4,7 @@ import {
     ManyToOne,
     JoinColumn,
 } from 'typeorm';
-import {BaseModel} from "../../../core/base.model";
+import {BaseModel} from "@/core/base.model";
 import { Country } from "../../common/countries/countries.entity";
 import {Representative} from "../representatives/representatives.entity";
 import type {Relation} from 'typeorm';

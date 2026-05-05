@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 import type {Relation} from 'typeorm';
 import { News } from '../news/news.entity';
-import { BaseModel } from '../../../core/base.model';
+import { BaseModel } from '@/core/base.model';
 
 @Entity('newsCategories')
 export class NewsCategories extends BaseModel {

@@ -1,4 +1,4 @@
-import { BaseModel } from "src/core/base.model";
+import { BaseModel } from "@/core/base.model";
 import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
 import {EventCategories} from "../event-categories/event-categories.entity";
 import type {Relation} from "typeorm";

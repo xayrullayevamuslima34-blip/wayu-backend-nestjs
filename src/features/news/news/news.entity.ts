@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
 import type {Relation} from "typeorm";
 import { Tags } from '../tags/tags.entity';
-import { BaseModel } from '../../../core/base.model';
+import { BaseModel } from '@/core/base.model';
 import { NewsCategories } from '../news-category/news-categories.entity';
 import { Country } from '../../common/countries/countries.entity';
 

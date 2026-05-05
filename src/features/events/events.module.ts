@@ -1,49 +1,77 @@
 import { Module } from '@nestjs/common';
-import { EventsController } from './events/events.controller';
+import { EventsAdminController, EventsPublicController } from './events/events.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Event } from './events/events.entity';
 import { EventCategories } from './event-categories/event-categories.entity';
-import { EventCategoriesController } from './event-categories/event-categories.controller';
-import { GetAllEventsHandler } from './events/queries/get-all-events/get-all-events.handler';
-import { GetOneEventHandler } from './events/queries/get-one-events/get-one-events.handler';
+import { GetAllEventsAdminHandler } from './events/admin/queries/get-all-events/get-all-events.admin.handler';
+import { GetOneEventsAdminHandler } from './events/admin/queries/get-one-events/get-one-events.admin.handler';
 import {
-  GetAllEventCategoriesHandler,
-} from './event-categories/queries/get-all-event-categories/get-all-event-categories.handler';
-import { CreateEventHandler } from './events/commands/create-events/create-events.handler';
-import { UpdateEventHandler } from './events/commands/update-events/update-events.handler';
+  GetAllEventCategoriesAdminHandler,
+} from './event-categories/admin/queries/get-all-event-categories/get-all-event-categories.admin.handler';
 import {
-  GetOneEventCategoriesHandler,
-} from './event-categories/queries/get-one-event-categories/get-one-event-categories.handler';
-import { DeleteEventHandler } from './events/commands/delete-events/delete-events.handler';
+  GetOneEventCategoriesAdminHandler,
+} from './event-categories/admin/queries/get-one-event-categories/get-one-event-categories.admin.handler';
 import {
-  CreateEventCategoriesHandler,
-} from './event-categories/commands/create-event-categories/create-event-categories.handler';
+  CreateEventCategoriesAdminHandler,
+} from './event-categories/admin/commands/create-event-categories/create-event-categories.admin.handler';
 import {
-  UpdateEventCategoriesHandler,
-} from './event-categories/commands/update-event-categories/update-event-categories.handler';
+  UpdateEventCategoriesAdminHandler,
+} from './event-categories/admin/commands/update-event-categories/update-event-categories.admin.handler';
 import {
-  DeleteEventCategoriesHandler,
-} from './event-categories/commands/delete-event-categories/delete-event-categories.handler';
+  DeleteEventCategoriesAdminHandler,
+} from './event-categories/admin/commands/delete-event-categories/delete-event-categories.admin.handler';
 import { ConfigModule } from '@nestjs/config';
+import {
+  EventCategoriesAdminController,
+  EventCategoriesPublicController,
+} from '@/features/events/event-categories/event-categories.controller';
+import {
+  GetAllEventCategoriesPublicHandler,
+} from '@/features/events/event-categories/public/queries/get-all-event-categories/get-all-event-categories.public.handler';
+import {
+  GetOneEventCategoriesPublicHandler,
+} from '@/features/events/event-categories/public/queries/get-one-event-categories/get-one-event-categories.public.handler';
+import {
+  UpdateEventsAdminHandler,
+} from '@/features/events/events/admin/commands/update-events/update-events.admin.handler';
+import {
+  CreateEventsAdminHandler,
+} from '@/features/events/events/admin/commands/create-events/create-events.admin.handler';
+import {
+  DeleteEventsAdminHandler,
+} from '@/features/events/events/admin/commands/delete-events/delete-events.admin.handler';
+import {
+  GetAllEventsPublicHandler,
+} from '@/features/events/events/public/queries/get-all-events/get-all-events.public.handler';
+import {
+  GetOneEventsPublicHandler,
+} from '@/features/events/events/public/queries/get-one-events/get-one-events.public.handler';
 
 
 @Module({
   imports: [TypeOrmModule.forFeature([Event, EventCategories]),
-  ConfigModule],
+    ConfigModule],
 
-  controllers: [EventsController, EventCategoriesController],
+  controllers: [EventsAdminController, EventsPublicController,
+    EventCategoriesAdminController, EventCategoriesPublicController,
+  ],
 
   providers: [
-    GetAllEventsHandler,
-    GetOneEventHandler,
-    CreateEventHandler,
-    UpdateEventHandler,
-    DeleteEventHandler,
-    GetAllEventCategoriesHandler,
-    GetOneEventCategoriesHandler,
-    CreateEventCategoriesHandler,
-    UpdateEventCategoriesHandler,
-    DeleteEventCategoriesHandler,
+    GetAllEventsAdminHandler,
+    GetOneEventsAdminHandler,
+    CreateEventsAdminHandler,
+    UpdateEventsAdminHandler,
+    DeleteEventsAdminHandler,
+    GetAllEventsPublicHandler,
+    GetOneEventsPublicHandler,
+
+    GetAllEventCategoriesAdminHandler,
+    GetOneEventCategoriesAdminHandler,
+    CreateEventCategoriesAdminHandler,
+    UpdateEventCategoriesAdminHandler,
+    DeleteEventCategoriesAdminHandler,
+    GetAllEventCategoriesPublicHandler,
+    GetOneEventCategoriesPublicHandler,
   ],
 })
 

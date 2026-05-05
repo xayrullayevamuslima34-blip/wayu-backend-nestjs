@@ -1,6 +1,6 @@
 import {Column, Entity} from 'typeorm';
-import {BaseModel} from "../../../core/base.model";
-import {PaymentProvider} from "../../../core/enums/paymentProvider.enum";
+import {BaseModel} from "@/core/base.model";
+import {PaymentProvider} from "@/core/enums/paymentProvider.enum";
 
 @Entity('donations')
 export class Donation extends BaseModel {

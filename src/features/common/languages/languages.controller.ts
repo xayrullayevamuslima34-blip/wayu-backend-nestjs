@@ -1,53 +1,75 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
-import { GetAllLanguagesResponse } from './queries/get-all-languages/get-all-languages.response';
-import { GetAllLanguagesFilters } from './queries/get-all-languages/get-all-languages.filters';
-import { GetAllLanguagesRequest } from './queries/get-all-languages/get-all-languages.request';
-import { GetOneLanguagesResponse } from './queries/get-one-languages/get-one-languages.response';
-import { GetOneLanguagesRequest } from './queries/get-one-languages/get-one-languages.request';
-import { CreateLanguagesResponse } from './commands/create-languages/create-languages.response';
-import { CreateLanguagesRequest } from './commands/create-languages/create-languages.request';
-import { CreateLanguagesCommand } from './commands/create-languages/create-languages.command';
-import { UpdateLanguagesResponse } from './commands/update-languages/update-languages.response';
-import { UpdateLanguagesRequest } from './commands/update-languages/update-languages.request';
-import { DeleteLanguagesRequest } from './commands/delete-languages/delete-languages.request';
+import { CreateLanguagesAdminResponse } from './admin/commands/create-languages/create-languages.admin.response';
+import { CreateLanguagesAdminRequest } from './admin/commands/create-languages/create-languages.admin.request';
+import { CreateLanguagesAdminCommand } from './admin/commands/create-languages/create-languages.admin.command';
+import { UpdateLanguagesAdminResponse } from './admin/commands/update-languages/update-languages.admin.response';
+import { UpdateLanguagesAdminRequest } from './admin/commands/update-languages/update-languages.admin.request';
+import { DeleteLanguagesAdminRequest } from './admin/commands/delete-languages/delete-languages.admin.request';
+import {
+  GetAllLanguagesAdminResponse
+} from '@/features/common/languages/admin/queries/get-all-languages/get-all-languages.admin.response';
+import {
+  GetAllLanguagesAdminFilters
+} from '@/features/common/languages/admin/queries/get-all-languages/get-all-languages.admin.filters';
+import {
+  GetAllLanguagesAdminRequest
+} from '@/features/common/languages/admin/queries/get-all-languages/get-all-languages.admin.request';
+import {
+  GetOneLanguagesAdminResponse
+} from '@/features/common/languages/admin/queries/get-one-languages/get-one-languages.admin.response';
+import {
+  GetOneLanguagesAdminRequest
+} from '@/features/common/languages/admin/queries/get-one-languages/get-one-languages.admin.request';
+import {
+  GetAllLanguagesPublicResponse
+} from '@/features/common/languages/public/queries/get-all-languages/get-all-languages.public.response';
+import {
+  GetAllLanguagesPublicFilters
+} from '@/features/common/languages/public/queries/get-all-languages/get-all-languages.public.filters';
+import {
+  GetAllLanguagesPublicRequest
+} from '@/features/common/languages/public/queries/get-all-languages/get-all-languages.public.request';
+import {
+  GetOneLanguagesPublicRequest
+} from '@/features/common/languages/public/queries/get-one-languages/get-one-languages.public.request';
 
-@Controller('languages')
-export class LanguagesController {
+@Controller('admin/languages')
+export class LanguagesAdminController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
   ) {}
 
   @Get('list')
-  @ApiOkResponse({ type: [GetAllLanguagesResponse] })
-  async getAll(@Query() filters: GetAllLanguagesFilters) {
-    return await this.queryBus.execute(new GetAllLanguagesRequest(filters));
+  @ApiOkResponse({ type: [GetAllLanguagesAdminResponse] })
+  async getAll(@Query() filters: GetAllLanguagesAdminFilters) {
+    return await this.queryBus.execute(new GetAllLanguagesAdminRequest(filters));
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: GetOneLanguagesResponse })
+  @ApiOkResponse({ type: GetOneLanguagesAdminResponse })
   async getOne(@Param('id', ParseIntPipe) id: number) {
-    const query = new GetOneLanguagesRequest();
+    const query = new GetOneLanguagesAdminRequest();
     query.id = id;
     return await this.queryBus.execute(query);
   }
 
   @Post('create')
-  @ApiCreatedResponse({ type: CreateLanguagesResponse })
-  async create(@Body() payload: CreateLanguagesRequest) {
-    const cmd = new CreateLanguagesCommand(payload.title);
+  @ApiCreatedResponse({ type: CreateLanguagesAdminResponse })
+  async create(@Body() payload: CreateLanguagesAdminRequest) {
+    const cmd = new CreateLanguagesAdminCommand(payload.title);
     return await this.commandBus.execute(cmd);
   }
 
   @Patch('update/:id')
-  @ApiOkResponse({ type: UpdateLanguagesResponse })
+  @ApiOkResponse({ type: UpdateLanguagesAdminResponse })
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() payload: UpdateLanguagesRequest,
+    @Body() payload: UpdateLanguagesAdminRequest,
   ) {
-    const cmd = new UpdateLanguagesRequest();
+    const cmd = new UpdateLanguagesAdminRequest();
     cmd.id = id;
     cmd.title = payload.title;
     return await this.commandBus.execute(cmd);
@@ -55,8 +77,36 @@ export class LanguagesController {
 
   @Delete('delete/:id')
   async delete(@Param('id', ParseIntPipe) id: number) {
-    const cmd = new DeleteLanguagesRequest();
+    const cmd = new DeleteLanguagesAdminRequest();
     cmd.id = id;
     return await this.commandBus.execute(cmd);
   }
+}
+
+
+function GetOneLanguagesPublicResponse() {
+
+}
+
+@Controller('public/languages')
+export class LanguagesPublicController {
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {}
+
+  @Get('list')
+  @ApiOkResponse({ type: [GetAllLanguagesPublicResponse] })
+  async getAll(@Query() filters: GetAllLanguagesPublicFilters) {
+    return await this.queryBus.execute(new GetAllLanguagesPublicRequest(filters));
+  }
+
+  @Get(':id')
+  @ApiOkResponse({ type: GetOneLanguagesPublicResponse })
+  async getOne(@Param('id', ParseIntPipe) id: number) {
+    const query = new GetOneLanguagesPublicRequest();
+    query.id = id;
+    return await this.queryBus.execute(query);
+  }
+
 }

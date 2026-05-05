@@ -6,46 +6,111 @@ import { SocialLink } from './social-links/social-links.entity';
 import { StaticInfo } from './static-info/static-info.entity';
 import { UsefulLink } from './useful-links/useful-links.entity';
 import { ConfigModule } from '@nestjs/config';
-import { FaqsController } from './faqs/faqs.controller';
-import { InstagramPostsController } from './instagram-posts/instagram-posts-controller';
-import { SocialLinksController } from './social-links/social-links.controller';
-import { StaticInfoController } from './static-info/static-info.controller';
-import { UsefulLinksController } from './useful-links/useful-links.controller';
-import { GetAllFaqsHandler } from './faqs/queries/get-all-faqs/get-all-faqs.handler';
-import { GetOneFaqsHandler } from './faqs/queries/get-one-faqs/get-one-faqs.handler';
-import { CreateFaqsHandler } from './faqs/commands/create-faqs/create-faqs.handler';
-import { UpdateFaqsHandler } from './faqs/commands/update-faqs/update-faqs.handler';
-import { DeleteFaqsHandler } from './faqs/commands/delete-faqs/delete-faqs.handler';
+import { FaqsAdminController, FaqsPublicController } from './faqs/faqs.controller';
 import {
-  GetAllInstagramPostsHandler,
-} from './instagram-posts/queries/get-all-instagram-posts/get-all-instagram-posts.handler';
+  InstagramPostsAdminController,
+  InstagramPostsPublicController,
+} from './instagram-posts/instagram-posts-controller';
 import {
-  GetOneInstagramPostsHandler,
-} from './instagram-posts/queries/get-one-instagram-posts/get-one-instagram-posts.handler';
+  SocialLinksAdminController,
+  SocialLinksPublicController,
+} from './social-links/social-links.controller';
+import { StaticInfoAdminController, StaticInfoPublicController } from './static-info/static-info.controller';
+import { GetAllFaqsPublicHandler } from './faqs/public/queries/get-all-faqs/get-all-faqs.public.handler';
+import { GetOneFaqsPublicHandler } from './faqs/public/queries/get-one-faqs/get-one-faqs.public.handler';
+import { CreateFaqsAdminHandler } from './faqs/admin/commands/create-faqs/create-faqs.admin.handler';
+import { UpdateFaqsAdminHandler } from './faqs/admin/commands/update-faqs/update-faqs.admin.handler';
+import { DeleteFaqsAdminHandler } from './faqs/admin/commands/delete-faqs/delete-faqs.admin.handler';
+import { GetAllFaqsAdminHandler } from '@/features/content/faqs/admin/queries/get-all-faqs/get-all-faqs.admin.handler';
+import { GetOneFaqsAdminHandler } from '@/features/content/faqs/admin/queries/get-one-faqs/get-one-faqs.admin.handler';
 import {
-  CreateInstagramPostsHandler,
-} from './instagram-posts/commands/create-instagram-posts/create-instagram-posts.handler';
+  UsefulLinksAdminController,
+  UsefulLinksPublicController,
+} from '@/features/content/useful-links/useful-links.controller';
 import {
-  UpdateInstagramPostsHandler,
-} from './instagram-posts/commands/update-instagram-posts/update-instagram-posts.handler';
+   GetAllSocialLinksPublicHandler,
+} from '@/features/content/social-links/public/queries/get-all-social-links/get-all-social-links.public.handler';
 import {
-  DeleteInstagramPostsHandler,
-} from './instagram-posts/commands/delete-instagram-posts/delete-instagram-posts.handler';
-import { GetAllSocialLinksHandler } from './social-links/queries/get-all-social-links/get-all-social-links.handler';
-import { GetOneSocialLinksHandler } from './social-links/queries/get-one-social-links/get-one-social-links.handler';
-import { CreateSocialLinksHandler } from './social-links/commands/create-social-links/create-social-links.handler';
-import { UpdateSocialLinksHandler } from './social-links/commands/update-social-links/update-social-links.handler';
-import { DeleteSocialLinksHandler } from './social-links/commands/delete-social-links/delete-social-links.handler';
-import { GetAllStaticInfoHandler } from './static-info/queries/get-all-static-info/get-all-static-info.handler';
-import { GetOneStaticInfoHandler } from './static-info/queries/get-one-static-info/get-one-static-info.handler';
-import { CreateStaticInfoHandler } from './static-info/commands/create-static-info/create-static-info.handler';
-import { UpdateStaticInfoHandler } from './static-info/commands/update-static-info/update-static-info.handler';
-import { DeleteStaticInfoHandler } from './static-info/commands/delete-static-info/delete-static-info.handler';
-import { GetAllUsefulLinksHandler } from './useful-links/queries/get-all-useful-links/get-all-useful-links.handler';
-import { GetOneUsefulLinksHandler } from './useful-links/queries/get-one-useful-links/get-one-useful-links.handler';
-import { CreateUsefulLinksHandler } from './useful-links/commands/create-useful-links/create-useful-links.handler';
-import { UpdateUsefulLinksHandler } from './useful-links/commands/update-useful-links/update-useful-links.handler';
-import { DeleteUsefulLinksHandler } from './useful-links/commands/delete-useful-links/delete-useful-links.handler';
+  GetAllStaticInfoAdminHandler,
+} from '@/features/content/static-info/admin/queries/get-all-static-info/get-all-static-info.admin.handler';
+import {
+  GetAllInstagramPostsAdminHandler
+} from '@/features/content/instagram-posts/admin/queries/get-all-instagram-posts/get-all-instagram-posts.admin.handler';
+import {
+  GetOneInstagramPostsAdminHandler
+} from '@/features/content/instagram-posts/admin/queries/get-one-instagram-posts/get-one-instagram-posts.admin.handler';
+import {
+  UpdateInstagramPostsAdminHandler
+} from '@/features/content/instagram-posts/admin/commands/update-instagram-posts/update-instagram-posts.admin.handler';
+import {
+  DeleteInstagramPostsAdminHandler
+} from '@/features/content/instagram-posts/admin/commands/delete-instagram-posts/delete-instagram-posts.admin.handler';
+import {
+  GetOneInstagramPostsPublicHandler
+} from '@/features/content/instagram-posts/public/queries/get-one-instagram-posts/get-one-instagram-posts.public.handler';
+import {
+  GetAllInstagramPostsPublicHandler
+} from '@/features/content/instagram-posts/public/queries/get-all-instagram-posts/get-all-instagram-posts.public.handler';
+import {
+  GetOneSocialLinksAdminHandler
+} from '@/features/content/social-links/admin/queries/get-one-social-links/get-one-social-links.admin.handler';
+import {
+  GetAllSocialLinksAdminHandler
+} from '@/features/content/social-links/admin/queries/get-all-social-links/get-all-social-links.admin.handler';
+import {
+  CreateSocialLinksAdminHandler
+} from '@/features/content/social-links/admin/commands/create-social-links/create-social-links.admin.handler';
+import {
+  UpdateSocialLinksAdminHandler
+} from '@/features/content/social-links/admin/commands/update-social-links/update-social-links.admin.handler';
+import {
+  DeleteSocialLinksAdminHandler
+} from '@/features/content/social-links/admin/commands/delete-social-links/delete-social-links.admin.handler';
+import {
+  GetOneSocialLinksPublicHandler
+} from '@/features/content/social-links/public/queries/get-one-social-links/get-one-social-links.public.handler';
+import {
+  GetOneStaticInfoAdminHandler
+} from '@/features/content/static-info/admin/queries/get-one-static-info/get-one-static-info.admin.handler';
+import {
+  CreateStaticInfoAdminHandler
+} from '@/features/content/static-info/admin/commands/create-static-info/create-static-info.admin.handler';
+import {
+  UpdateStaticInfoAdminHandler
+} from '@/features/content/static-info/admin/commands/update-static-info/update-static-info.admin.handler';
+import {
+  GetAllUsefulLinksAdminHandler,
+} from '@/features/content/useful-links/admin/queries/get-all-useful-links/get-all-useful-links.admin.handler';
+import {
+  DeleteStaticInfoAdminHandler
+} from '@/features/content/static-info/admin/commands/delete-static-info/delete-static-info.admin.handler';
+import {
+  GetAllStaticInfoPublicHandler
+} from '@/features/content/static-info/public/queries/get-all-static-info/get-all-static-info.public.handler';
+import {
+  GetOneStaticInfoPublicHandler
+} from '@/features/content/static-info/public/queries/get-one-static-info/get-one-static-info.public.handler';
+import {
+   GetOneUsefulLinksPublicHandler,
+} from '@/features/content/useful-links/public/queries/get-one-useful-links/get-one-useful-links.public.handler';
+import {
+  CreateUsefulLinksAdminHandler,
+} from '@/features/content/useful-links/admin/commands/create-useful-links/create-useful-links.admin.handler';
+import {
+  GetOneUsefulLinksAdminHandler
+} from '@/features/content/useful-links/admin/queries/get-one-useful-links/get-one-useful-links.admin.handler';
+import {
+  UpdateUsefulLinksAdminHandler
+} from '@/features/content/useful-links/admin/commands/update-useful-links/update-useful-links.admin.handler';
+import {
+  DeleteUsefulLinksAdminHandler
+} from '@/features/content/useful-links/admin/commands/delete-useful-links/delete-useful-links.admin.handler';
+import {
+  GetAllUsefulLinksPublicHandler
+} from '@/features/content/useful-links/public/queries/get-all-useful-links/get-all-useful-links.public.handler';
+import {
+  CreateInstagramPostsAdminHandler
+} from '@/features/content/instagram-posts/admin/commands/create-instagram-posts/create-instagram-posts.admin.handler';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Faqs, InstagramPost, SocialLink,
@@ -53,39 +118,53 @@ import { DeleteUsefulLinksHandler } from './useful-links/commands/delete-useful-
     ConfigModule],
 
   controllers: [
-    FaqsController,
-    InstagramPostsController,
-    SocialLinksController,
-    StaticInfoController,
-    UsefulLinksController,
+    FaqsAdminController,FaqsPublicController,
+    InstagramPostsAdminController, InstagramPostsPublicController,
+    SocialLinksAdminController, SocialLinksPublicController,
+    StaticInfoAdminController,  StaticInfoPublicController,
+    UsefulLinksAdminController, UsefulLinksPublicController,
   ],
 
   providers: [
-    GetAllFaqsHandler,
-    GetOneFaqsHandler,
-    CreateFaqsHandler,
-    UpdateFaqsHandler,
-    DeleteFaqsHandler,
-    GetAllInstagramPostsHandler,
-    GetOneInstagramPostsHandler,
-    CreateInstagramPostsHandler,
-    UpdateInstagramPostsHandler,
-    DeleteInstagramPostsHandler,
-    GetAllSocialLinksHandler,
-    GetOneSocialLinksHandler,
-    CreateSocialLinksHandler,
-    UpdateSocialLinksHandler,
-    DeleteSocialLinksHandler,
-    GetAllStaticInfoHandler,
-    GetOneStaticInfoHandler,
-    CreateStaticInfoHandler,
-    UpdateStaticInfoHandler,
-    DeleteStaticInfoHandler,
-    GetAllUsefulLinksHandler,
-    GetOneUsefulLinksHandler,
-    CreateUsefulLinksHandler,
-    UpdateUsefulLinksHandler,
-    DeleteUsefulLinksHandler,
+    GetAllFaqsAdminHandler,
+    GetOneFaqsAdminHandler,
+    CreateFaqsAdminHandler,
+    UpdateFaqsAdminHandler,
+    DeleteFaqsAdminHandler,
+    GetAllFaqsPublicHandler,
+    GetOneFaqsPublicHandler,
+
+    GetAllInstagramPostsAdminHandler,
+    GetOneInstagramPostsAdminHandler,
+    CreateInstagramPostsAdminHandler,
+    UpdateInstagramPostsAdminHandler,
+    DeleteInstagramPostsAdminHandler,
+    GetAllInstagramPostsPublicHandler,
+    GetOneInstagramPostsPublicHandler,
+
+    GetAllSocialLinksAdminHandler,
+    GetOneSocialLinksAdminHandler,
+    CreateSocialLinksAdminHandler,
+    UpdateSocialLinksAdminHandler,
+    DeleteSocialLinksAdminHandler,
+    GetAllSocialLinksPublicHandler,
+    GetOneSocialLinksPublicHandler,
+
+    GetAllStaticInfoAdminHandler,
+    GetOneStaticInfoAdminHandler,
+    CreateStaticInfoAdminHandler,
+    UpdateStaticInfoAdminHandler,
+    DeleteStaticInfoAdminHandler,
+    GetAllStaticInfoPublicHandler,
+    GetOneStaticInfoPublicHandler,
+
+    GetAllUsefulLinksAdminHandler,
+    GetOneUsefulLinksAdminHandler,
+    CreateUsefulLinksAdminHandler,
+    UpdateUsefulLinksAdminHandler,
+    DeleteUsefulLinksAdminHandler,
+    GetAllUsefulLinksPublicHandler,
+    GetOneUsefulLinksPublicHandler,
   ],
 })
 

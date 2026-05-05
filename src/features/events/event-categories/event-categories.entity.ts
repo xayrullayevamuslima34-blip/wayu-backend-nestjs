@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 import {Event} from '../events/events.entity'
-import { BaseModel } from '../../../core/base.model';
+import { BaseModel } from '@/core/base.model';
 import type {Relation} from 'typeorm';
 
 

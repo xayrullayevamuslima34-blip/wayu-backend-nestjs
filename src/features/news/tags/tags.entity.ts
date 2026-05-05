@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToMany } from 'typeorm';
 import { News } from '../news/news.entity';
-import { BaseModel } from '../../../core/base.model';
+import { BaseModel } from '@/core/base.model';
 import { Faqs } from '../../content/faqs/faqs.entity';
 import type {Relation} from 'typeorm';
 

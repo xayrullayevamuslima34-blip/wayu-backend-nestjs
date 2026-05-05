@@ -1,53 +1,69 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
-import { GetAllAuthorsResponse } from './queries/get-all-authors/get-all-authors.response';
-import { GetAllAuthorsFilters } from './queries/get-all-authors/get-all-authors.filters';
-import { GetAllAuthorsRequest } from './queries/get-all-authors/get-all-authors.request';
-import { GetOneAuthorsResponse } from './queries/get-one-authors/get-one-authors.response';
-import { GetOneAuthorsRequest } from './queries/get-one-authors/get-one-authors.request';
-import { CreateAuthorsResponse } from './commands/create-authors/create-authors.response';
-import { CreateAuthorsRequest } from './commands/create-authors/create-authors.request';
-import { CreateAuthorsCommand } from './commands/create-authors/create-authors.command';
-import { UpdateAuthorsResponse } from './commands/update-authors/update-authors.response';
-import { UpdateAuthorsRequest } from './commands/update-authors/update-authors.request';
-import { DeleteAuthorsRequest } from './commands/delete-authors/delete-authors.request';
+import { GetAllAuthorsAdminResponse } from './admin/queries/get-all-authors/get-all-authors.admin.response';
+import { GetAllAuthorsAdminFilters } from './admin/queries/get-all-authors/get-all-authors.admin.filters';
+import { GetAllAuthorsAdminRequest } from './admin/queries/get-all-authors/get-all-authors.admin.request';
+import { GetOneAuthorsAdminResponse } from './admin/queries/get-one-authors/get-one-authors.admin.response';
+import { GetOneAuthorsAdminRequest } from './admin/queries/get-one-authors/get-one-authors.admin.request';
+import { CreateAuthorsAdminResponse } from './admin/commands/create-authors/create-authors.admin.response';
+import { CreateAuthorsAdminRequest } from './admin/commands/create-authors/create-authors.admin.request';
+import { CreateAuthorsAdminCommand } from './admin/commands/create-authors/create-authors.admin.command';
+import { UpdateAuthorsAdminResponse } from './admin/commands/update-authors/update-authors.admin.response';
+import { UpdateAuthorsAdminRequest } from './admin/commands/update-authors/update-authors.admin.request';
+import { DeleteAuthorsAdminRequest } from './admin/commands/delete-authors/delete-authors.admin.request';
+import {
+  GetAllAuthorsPublicResponse,
+} from '@/features/library/authors/public/queries/get-all-authors/get-all-authors.public.response';
+import {
+  GetAllAuthorsPublicFilters,
+} from '@/features/library/authors/public/queries/get-all-authors/get-all-authors.public.filters';
+import {
+  GetAllAuthorsPublicRequest,
+} from '@/features/library/authors/public/queries/get-all-authors/get-all-authors.public.request';
+import {
+  GetOneAuthorsPublicResponse,
+} from '@/features/library/authors/public/queries/get-one-authors/get-one-authors.public.response';
+import {
+  GetOneAuthorsPublicRequest,
+} from '@/features/library/authors/public/queries/get-one-authors/get-one-authors.public.request';
 
-@Controller('authors')
-export class AuthorsController {
+@Controller('admin/authors')
+export class AuthorsAdminController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) {}
+  ) {
+  }
 
   @Get('list')
-  @ApiOkResponse({ type: [GetAllAuthorsResponse] })
-  async getAll(@Query() filters: GetAllAuthorsFilters) {
-    return await this.queryBus.execute(new GetAllAuthorsRequest(filters));
+  @ApiOkResponse({ type: [GetAllAuthorsAdminResponse] })
+  async getAll(@Query() filters: GetAllAuthorsAdminFilters) {
+    return await this.queryBus.execute(new GetAllAuthorsAdminRequest(filters));
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: GetOneAuthorsResponse })
+  @ApiOkResponse({ type: GetOneAuthorsAdminResponse })
   async getOne(@Param('id', ParseIntPipe) id: number) {
-    const query = new GetOneAuthorsRequest();
+    const query = new GetOneAuthorsAdminRequest();
     query.id = id;
     return await this.queryBus.execute(query);
   }
 
   @Post('create')
-  @ApiCreatedResponse({ type: CreateAuthorsResponse })
-  async create(@Body() payload: CreateAuthorsRequest) {
-    const cmd = new CreateAuthorsCommand(payload.fullName);
+  @ApiCreatedResponse({ type: CreateAuthorsAdminResponse })
+  async create(@Body() payload: CreateAuthorsAdminRequest) {
+    const cmd = new CreateAuthorsAdminCommand(payload.fullName);
     return await this.commandBus.execute(cmd);
   }
 
   @Patch('update/:id')
-  @ApiOkResponse({ type: UpdateAuthorsResponse })
+  @ApiOkResponse({ type: UpdateAuthorsAdminResponse })
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() payload: UpdateAuthorsRequest,
+    @Body() payload: UpdateAuthorsAdminRequest,
   ) {
-    const cmd = new UpdateAuthorsRequest();
+    const cmd = new UpdateAuthorsAdminRequest();
     cmd.id = id;
     cmd.fullName = payload.fullName;
     return await this.commandBus.execute(cmd);
@@ -55,8 +71,32 @@ export class AuthorsController {
 
   @Delete('delete/:id')
   async delete(@Param('id', ParseIntPipe) id: number) {
-    const cmd = new DeleteAuthorsRequest();
+    const cmd = new DeleteAuthorsAdminRequest();
     cmd.id = id;
     return await this.commandBus.execute(cmd);
   }
+}
+
+
+@Controller('public/authors')
+export class AuthorsPublicController {
+  constructor(
+    private readonly queryBus: QueryBus,
+  ) {
+  }
+
+  @Get('list')
+  @ApiOkResponse({ type: [GetAllAuthorsPublicResponse] })
+  async getAll(@Query() filters: GetAllAuthorsPublicFilters) {
+    return await this.queryBus.execute(new GetAllAuthorsPublicRequest(filters));
+  }
+
+  @Get(':id')
+  @ApiOkResponse({ type: GetOneAuthorsPublicResponse })
+  async getOne(@Param('id', ParseIntPipe) id: number) {
+    const query = new GetOneAuthorsPublicRequest();
+    query.id = id;
+    return await this.queryBus.execute(query);
+  }
+
 }

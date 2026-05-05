@@ -4,61 +4,87 @@ import { Author } from './authors/authors.entity';
 import { BookCategory } from './book-categories/book-categories.entity';
 import { Book } from './books/books.entity';
 import { ConfigModule } from '@nestjs/config';
-import { AuthorsController } from './authors/authors.controller';
-import { BookCategoriesController } from './book-categories/book-categories.controller';
-import { BooksController } from './books/books.controller';
-import { GetAllAuthorsHandler } from './authors/queries/get-all-authors/get-all-authors.handler';
-import { GetOneAuthorsHandler } from './authors/queries/get-one-authors/get-one-authors.handler';
-import { CreateAuthorsHandler } from './authors/commands/create-authors/create-authors.handler';
-import { DeleteAuthorsHandler } from './authors/commands/delete-authors/delete-authors.handler';
-import { UpdateAuthorsHandler } from './authors/commands/update-authors/update-authors.handler';
+import { AuthorsAdminController, AuthorsPublicController } from './authors/authors.controller';
 import {
-  GetAllBookCategoriesHandler,
-} from './book-categories/queries/get-all-book-categories/get-all-book-categories.handler';
+  BookCategoriesAdminController,
+  BookCategoriesPublicController,
+} from './book-categories/book-categories.controller';
+import { BooksAdminController, BooksPublicController } from './books/books.controller';
+import { GetAllAuthorsAdminHandler } from './authors/admin/queries/get-all-authors/get-all-authors.admin.handler';
+import { GetOneAuthorsAdminHandler } from './authors/admin/queries/get-one-authors/get-one-authors.admin.handler';
+import { CreateAuthorsAdminHandler } from './authors/admin/commands/create-authors/create-authors.admin.handler';
+import { DeleteAuthorsAdminHandler } from './authors/admin/commands/delete-authors/delete-authors.admin.handler';
+import { UpdateAuthorsAdminHandler } from './authors/admin/commands/update-authors/update-authors.admin.handler';
 import {
-  GetOneBookCategoriesHandler,
-} from './book-categories/queries/get-one-book-categories/get-one-book-categories.handler';
+  GetAllBookCategoriesAdminHandler,
+} from './book-categories/admin/queries/get-all-book-categories/get-all-book-categories.admin.handler';
 import {
-  CreateBookCategoriesHandler,
-} from './book-categories/commands/create-book-categories/create-book-categories.handler';
+  GetOneBookCategoriesAdminHandler,
+} from './book-categories/admin/queries/get-one-book-categories/get-one-book-categories.admin.handler';
 import {
-  UpdateBookCategoriesHandler,
-} from './book-categories/commands/update-book-categories/update-book-categories.handler';
+  CreateBookCategoriesAdminHandler,
+} from './book-categories/admin/commands/create-book-categories/create-book-categories.admin.handler';
 import {
-  DeleteBookCategoriesHandler,
-} from './book-categories/commands/delete-book-categories/delete-book-categories.handler';
-import { GetAllBooksHandler } from './books/queries/get-all-books/get-all-books.handler';
-import { GetOneBooksHandler } from './books/queries/get-one-books/get-one-books.handler';
-import { UpdateBooksHandler } from './books/commands/update-books/update-books.handler';
-import { DeleteBooksHandler } from './books/commands/delete-books/delete-books.handler';
-import { CreateBooksHandler } from './books/commands/create-books/create-books.handler';
+  UpdateBookCategoriesAdminHandler,
+} from './book-categories/admin/commands/update-book-categories/update-book-categories.admin.handler';
+import {
+  DeleteBookCategoriesAdminHandler,
+} from './book-categories/admin/commands/delete-book-categories/delete-book-categories.admin.handler';
+import { GetAllBooksAdminHandler } from './books/admin/queries/get-all-books/get-all-books.admin.handler';
+import { GetOneBooksAdminHandler } from './books/admin/queries/get-one-books/get-one-books.admin.handler';
+import { UpdateBooksAdminHandler } from './books/admin/commands/update-books/update-books.admin.handler';
+import { DeleteBooksAdminHandler } from './books/admin/commands/delete-books/delete-books.admin.handler';
+import { CreateBooksAdminHandler } from './books/admin/commands/create-books/create-books.admin.handler';
+import {
+  GetAllAuthorsPublicHandler,
+} from '@/features/library/authors/public/queries/get-all-authors/get-all-authors.public.handler';
+import {
+  GetAllBookCategoriesPublicHandler,
+} from '@/features/library/book-categories/public/queries/get-all-book-categories/get-all-book-categories.public.handler';
+import {
+  GetOneBookCategoriesPublicHandler,
+} from '@/features/library/book-categories/public/queries/get-one-book-categories/get-one-book-categories.public.handler';
+import {
+  GetAllBooksPublicHandler,
+} from '@/features/library/books/public/queries/get-all-books/get-all-books.public.handler';
+import {
+  GetOneBooksPublicHandler,
+} from '@/features/library/books/public/queries/get-one-books/get-one-books.public.handler';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Author, BookCategory, Book]),
     ConfigModule],
 
   controllers: [
-    AuthorsController,
-    BookCategoriesController,
-    BooksController,
+    AuthorsAdminController, AuthorsPublicController,
+    BookCategoriesAdminController, BookCategoriesPublicController,
+    BooksAdminController, BooksPublicController,
   ],
 
   providers: [
-    GetAllAuthorsHandler,
-    GetOneAuthorsHandler,
-    CreateAuthorsHandler,
-    UpdateAuthorsHandler,
-    DeleteAuthorsHandler,
-    GetAllBookCategoriesHandler,
-    GetOneBookCategoriesHandler,
-    CreateBookCategoriesHandler,
-    UpdateBookCategoriesHandler,
-    DeleteBookCategoriesHandler,
-    GetAllBooksHandler,
-    GetOneBooksHandler,
-    CreateBooksHandler,
-    UpdateBooksHandler,
-    DeleteBooksHandler,
+    GetAllAuthorsAdminHandler,
+    GetOneAuthorsAdminHandler,
+    CreateAuthorsAdminHandler,
+    UpdateAuthorsAdminHandler,
+    DeleteAuthorsAdminHandler,
+    GetAllAuthorsPublicHandler,
+    GetAllAuthorsPublicHandler,
+
+    GetAllBookCategoriesAdminHandler,
+    GetOneBookCategoriesAdminHandler,
+    CreateBookCategoriesAdminHandler,
+    UpdateBookCategoriesAdminHandler,
+    DeleteBookCategoriesAdminHandler,
+    GetAllBookCategoriesPublicHandler,
+    GetOneBookCategoriesPublicHandler,
+
+    GetAllBooksAdminHandler,
+    GetOneBooksAdminHandler,
+    CreateBooksAdminHandler,
+    UpdateBooksAdminHandler,
+    DeleteBooksAdminHandler,
+    GetAllBooksPublicHandler,
+    GetOneBooksPublicHandler,
   ],
 })
 

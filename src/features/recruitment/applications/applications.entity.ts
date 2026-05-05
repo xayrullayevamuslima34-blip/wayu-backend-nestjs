@@ -1,7 +1,7 @@
 import {Column, Entity, ManyToOne, JoinColumn} from 'typeorm';
-import {BaseModel} from "../../../core/base.model";
+import {BaseModel} from "@/core/base.model";
 import {Vacancy} from "../vacancies/vacancies.entity";
-import {ApplicationStatus} from "../../../core/enums/aplicationStatus.enum";
+import {ApplicationStatus} from "@/core/enums/aplicationStatus.enum";
 
 
 @Entity('applications')

@@ -1,43 +1,58 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
-import { GetAllVacanciesResponse } from './queries/get-all-vacancies/get-all-vacancies.response';
-import { GetAllVacanciesFilters } from './queries/get-all-vacancies/get-all-vacancies.filters';
-import { GetAllVacanciesRequest } from './queries/get-all-vacancies/get-all-vacancies.request';
-import { GetOneVacanciesResponse } from './queries/get-one-vacancies/get-one-vacancies.response';
-import { GetOneVacanciesRequest } from './queries/get-one-vacancies/get-one-vacancies.request';
-import { CreateVacanciesResponse } from './commands/create-vacancies/create-vacancies.response';
-import { CreateVacanciesRequest } from './commands/create-vacancies/create-vacancies.request';
-import { CreateVacanciesCommand } from './commands/create-vacancies/create-vacancies.command';
-import { UpdateVacanciesResponse } from './commands/update-vacancies/update-vacancies.response';
-import { UpdateVacanciesRequest } from './commands/update-vacancies/update-vacancies.request';
-import { DeleteVacanciesRequest } from './commands/delete-vacancies/delete-vacancies.request';
+import { GetAllVacanciesAdminResponse } from './admin/queries/get-all-vacancies/get-all-vacancies.admin.response';
+import { GetAllVacanciesAdminFilters } from './admin/queries/get-all-vacancies/get-all-vacancies.admin.filters';
+import { GetAllVacanciesAdminRequest } from './admin/queries/get-all-vacancies/get-all-vacancies.admin.request';
+import { GetOneVacanciesAdminResponse } from './admin/queries/get-one-vacancies/get-one-vacancies.admin.response';
+import { GetOneVacanciesAdminRequest } from './admin/queries/get-one-vacancies/get-one-vacancies.admin.request';
+import { CreateVacanciesAdminResponse } from './admin/commands/create-vacancies/create-vacancies.admin.response';
+import { CreateVacanciesAdminRequest } from './admin/commands/create-vacancies/create-vacancies.admin.request';
+import { CreateVacanciesAdminCommand } from './admin/commands/create-vacancies/create-vacancies.admin.command';
+import { UpdateVacanciesAdminResponse } from './admin/commands/update-vacancies/update-vacancies.admin.response';
+import { UpdateVacanciesAdminRequest } from './admin/commands/update-vacancies/update-vacancies.admin.request';
+import { DeleteVacanciesAdminRequest } from './admin/commands/delete-vacancies/delete-vacancies.admin.request';
+import {
+  GetAllVacanciesPublicResponse
+} from '@/features/recruitment/vacancies/public/queries/get-all-vacancies/get-all-vacancies.public.response';
+import {
+  GetAllVacanciesPublicFilters
+} from '@/features/recruitment/vacancies/public/queries/get-all-vacancies/get-all-vacancies.public.filters';
+import {
+  GetAllVacanciesPublicRequest
+} from '@/features/recruitment/vacancies/public/queries/get-all-vacancies/get-all-vacancies.public.request';
+import {
+  GetOneVacanciesPublicResponse
+} from '@/features/recruitment/vacancies/public/queries/get-one-vacancies/get-one-vacancies.public.response';
+import {
+  GetOneVacanciesPublicRequest
+} from '@/features/recruitment/vacancies/public/queries/get-one-vacancies/get-one-vacancies.public.request';
 
-@Controller('vacancies')
-export class VacanciesController {
+@Controller('admin/vacancies')
+export class VacanciesAdminController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
   ) {}
 
   @Get('list')
-  @ApiOkResponse({ type: [GetAllVacanciesResponse] })
-  async getAll(@Query() filters: GetAllVacanciesFilters) {
-    return await this.queryBus.execute(new GetAllVacanciesRequest(filters));
+  @ApiOkResponse({ type: [GetAllVacanciesAdminResponse] })
+  async getAll(@Query() filters: GetAllVacanciesAdminFilters) {
+    return await this.queryBus.execute(new GetAllVacanciesAdminRequest(filters));
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: GetOneVacanciesResponse })
+  @ApiOkResponse({ type: GetOneVacanciesAdminResponse })
   async getOne(@Param('id', ParseIntPipe) id: number) {
-    const query = new GetOneVacanciesRequest();
+    const query = new GetOneVacanciesAdminRequest();
     query.id = id;
     return await this.queryBus.execute(query);
   }
 
   @Post('create')
-  @ApiCreatedResponse({ type: CreateVacanciesResponse })
-  async create(@Body() payload: CreateVacanciesRequest) {
-    const cmd = new CreateVacanciesCommand(
+  @ApiCreatedResponse({ type: CreateVacanciesAdminResponse })
+  async create(@Body() payload: CreateVacanciesAdminRequest) {
+    const cmd = new CreateVacanciesAdminCommand(
       payload.title,
       payload.address,
       payload.description,
@@ -50,12 +65,12 @@ export class VacanciesController {
   }
 
   @Patch('update/:id')
-  @ApiOkResponse({ type: UpdateVacanciesResponse })
+  @ApiOkResponse({ type: UpdateVacanciesAdminResponse })
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() payload: UpdateVacanciesRequest,
+    @Body() payload: UpdateVacanciesAdminRequest,
   ) {
-    const cmd = new UpdateVacanciesRequest();
+    const cmd = new UpdateVacanciesAdminRequest();
     cmd.id = id;
     cmd.title = payload.title;
     cmd.address = payload.address;
@@ -69,8 +84,32 @@ export class VacanciesController {
 
   @Delete('delete/:id')
   async delete(@Param('id', ParseIntPipe) id: number) {
-    const cmd = new DeleteVacanciesRequest();
+    const cmd = new DeleteVacanciesAdminRequest();
     cmd.id = id;
     return await this.commandBus.execute(cmd);
+  }
+}
+
+
+
+@Controller('public/vacancies')
+export class VacanciesPublicController {
+  constructor(
+    private readonly queryBus: QueryBus,
+  ) {
+  }
+
+  @Get('list')
+  @ApiOkResponse({ type: [GetAllVacanciesPublicResponse] })
+  async getAll(@Query() filters: GetAllVacanciesPublicFilters) {
+    return await this.queryBus.execute(new GetAllVacanciesPublicRequest(filters));
+  }
+
+  @Get(':id')
+  @ApiOkResponse({ type: GetOneVacanciesPublicResponse })
+  async getOne(@Param('id', ParseIntPipe) id: number) {
+    const query = new GetOneVacanciesPublicRequest();
+    query.id = id;
+    return await this.queryBus.execute(query);
   }
 }

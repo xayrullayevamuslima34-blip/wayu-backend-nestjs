@@ -1,6 +1,6 @@
 import { Column, Entity } from 'typeorm';
-import {BaseModel} from "../../../core/base.model";
-import {VacancyType} from "../../../core/enums/vacancyType.enum";
+import {BaseModel} from "@/core/base.model";
+import {VacancyType} from "@/core/enums/vacancyType.enum";
 
 @Entity('vacancies')
 export class Vacancy extends BaseModel {

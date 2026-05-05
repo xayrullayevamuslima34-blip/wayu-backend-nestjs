@@ -1,43 +1,43 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
-import { GetAllDonationsResponse } from './queries/get-all-donations/get-all-donations.response';
-import { GetAllDonationsFilters } from './queries/get-all-donations/get-all-donations.filters';
-import { GetAllDonationsRequest } from './queries/get-all-donations/get-all-donations.request';
-import { GetOneDonationsResponse } from './queries/get-one-donations/get-one-donations.response';
-import { GetOneDonationsRequest } from './queries/get-one-donations/get-one-donations.request';
-import { CreateDonationsResponse } from './commands/create-donations/create-donations.response';
-import { CreateDonationsRequest } from './commands/create-donations/create-donations.request';
-import { CreateDonationsCommand } from './commands/create-donations/create-donations.command';
-import { UpdateDonationsResponse } from './commands/update-donations/update-donations.response';
-import { UpdateDonationsRequest } from './commands/update-donations/update-donations.request';
-import { DeleteDonationsRequest } from './commands/delete-donations/delete-donations.request';
+import { GetAllDonationsAdminResponse } from './admin/queries/get-all-donations/get-all-donations.admin.response';
+import { GetAllDonationsAdminFilters } from './admin/queries/get-all-donations/get-all-donations.admin.filters';
+import { GetAllDonationsAdminRequest } from './admin/queries/get-all-donations/get-all-donations.admin.request';
+import { GetOneDonationsAdminResponse } from './admin/queries/get-one-donations/get-one-donations.admin.response';
+import { GetOneDonationsAdminRequest } from './admin/queries/get-one-donations/get-one-donations.admin.request';
+import { CreateDonationsAdminResponse } from './admin/commands/create-donations/create-donations.admin.response';
+import { CreateDonationsAdminRequest } from './admin/commands/create-donations/create-donations.admin.request';
+import { CreateDonationsAdminCommand } from './admin/commands/create-donations/create-donations.admin.command';
+import { UpdateDonationsAdminResponse } from './admin/commands/update-donations/update-donations.admin.response';
+import { UpdateDonationsAdminRequest } from './admin/commands/update-donations/update-donations.admin.request';
+import { DeleteDonationsAdminRequest } from './admin/commands/delete-donations/delete-donations.admin.request';
 
-@Controller('donations')
-export class DonationsController {
+@Controller('admin/donations')
+export class DonationsAdminController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
   ) {}
 
   @Get('list')
-  @ApiOkResponse({ type: [GetAllDonationsResponse] })
-  async getAll(@Query() filters: GetAllDonationsFilters) {
-    return await this.queryBus.execute(new GetAllDonationsRequest(filters));
+  @ApiOkResponse({ type: [GetAllDonationsAdminResponse] })
+  async getAll(@Query() filters: GetAllDonationsAdminFilters) {
+    return await this.queryBus.execute(new GetAllDonationsAdminRequest(filters));
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: GetOneDonationsResponse })
+  @ApiOkResponse({ type: GetOneDonationsAdminResponse })
   async getOne(@Param('id', ParseIntPipe) id: number) {
-    const query = new GetOneDonationsRequest();
+    const query = new GetOneDonationsAdminRequest();
     query.id = id;
     return await this.queryBus.execute(query);
   }
 
   @Post('create')
-  @ApiCreatedResponse({ type: CreateDonationsResponse })
-  async create(@Body() payload: CreateDonationsRequest) {
-    const cmd = new CreateDonationsCommand(
+  @ApiCreatedResponse({ type: CreateDonationsAdminResponse })
+  async create(@Body() payload: CreateDonationsAdminRequest) {
+    const cmd = new CreateDonationsAdminCommand(
       payload.amount,
       payload.fullName,
       payload.date,
@@ -47,12 +47,12 @@ export class DonationsController {
   }
 
   @Patch('update/:id')
-  @ApiOkResponse({ type: UpdateDonationsResponse })
+  @ApiOkResponse({ type: UpdateDonationsAdminResponse })
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() payload: UpdateDonationsRequest,
+    @Body() payload: UpdateDonationsAdminRequest,
   ) {
-    const cmd = new UpdateDonationsRequest();
+    const cmd = new UpdateDonationsAdminRequest();
     cmd.id = id;
     cmd.amount = payload.amount;
     cmd.fullName = payload.fullName;
@@ -63,8 +63,33 @@ export class DonationsController {
 
   @Delete('delete/:id')
   async delete(@Param('id', ParseIntPipe) id: number) {
-    const cmd = new DeleteDonationsRequest();
+    const cmd = new DeleteDonationsAdminRequest();
     cmd.id = id;
     return await this.commandBus.execute(cmd);
   }
+}
+
+
+@Controller('public/donations')
+export class DonationsPublicController {
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {
+  }
+
+  @Get('list')
+  @ApiOkResponse({ type: [GetAllDonationsAdminResponse] })
+  async getAll(@Query() filters: GetAllDonationsAdminFilters) {
+    return await this.queryBus.execute(new GetAllDonationsAdminRequest(filters));
+  }
+
+  @Get(':id')
+  @ApiOkResponse({ type: GetOneDonationsAdminResponse })
+  async getOne(@Param('id', ParseIntPipe) id: number) {
+    const query = new GetOneDonationsAdminRequest();
+    query.id = id;
+    return await this.queryBus.execute(query);
+  }
+
 }
