@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import {
   GetAllEventCategoriesAdminResponse,
 } from './admin/queries/get-all-event-categories/get-all-event-categories.admin.response';
@@ -49,7 +49,11 @@ import {
 import {
   GetOneEventCategoriesPublicRequest,
 } from '@/features/events/event-categories/public/queries/get-one-event-categories/get-one-event-categories.public.request';
+import { Roles } from '@/core/decorators/role.decorators';
+import { Role } from '@/core/enums/role.enum';
 
+@Roles(Role.Admin)
+@ApiBearerAuth()
 @Controller('public/event-categories')
 export class EventCategoriesAdminController {
   constructor(

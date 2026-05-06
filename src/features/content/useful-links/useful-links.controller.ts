@@ -12,7 +12,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiConsumes, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storageOptions } from '@/config/multer.config';
 import fs from 'fs';
@@ -64,7 +64,11 @@ import {
 import {
   GetOneUsefulLinksAdminRequest
 } from '@/features/content/useful-links/admin/queries/get-one-useful-links/get-one-useful-links.admin.request';
+import { Roles } from '@/core/decorators/role.decorators';
+import { Role } from '@/core/enums/role.enum';
 
+@Roles(Role.Admin)
+@ApiBearerAuth()
 @Controller('admin/useful-links')
 export class UsefulLinksAdminController {
   constructor(

@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { GetAllTagsAdminResponse } from './admin/queries/get-all-tags/get-all-tags.admin.response';
 import { GetAllTagsAdminRequest } from './admin/queries/get-all-tags/get-all-tags.admin.request';
 import { GetOneTagsAdminResponse } from './admin/queries/get-one-tags/get-one-tags.admin.response';
@@ -20,7 +20,11 @@ import {
   GetOneTagsPublicResponse,
 } from '@/features/news/tags/public/queries/get-one-tags/get-one-tags.public.response';
 import { GetOneTagsPublicRequest } from '@/features/news/tags/public/queries/get-one-tags/get-one-tags.public.request';
+import { Roles } from '@/core/decorators/role.decorators';
+import { Role } from '@/core/enums/role.enum';
 
+@Roles(Role.Admin)
+@ApiBearerAuth()
 @Controller('admin/tags')
 export class TagsAdminController {
   constructor(

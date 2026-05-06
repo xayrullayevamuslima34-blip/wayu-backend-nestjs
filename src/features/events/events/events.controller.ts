@@ -12,7 +12,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiConsumes, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storageOptions } from '@/config/multer.config';
 import fs from 'fs';
@@ -55,7 +55,11 @@ import {
 import {
   GetOneEventsPublicRequest,
 } from '@/features/events/events/public/queries/get-one-events/get-one-events.public.request';
+import { Roles } from '@/core/decorators/role.decorators';
+import { Role } from '@/core/enums/role.enum';
 
+@Roles(Role.Admin)
+@ApiBearerAuth()
 @Controller('admin/events')
 export class EventsAdminController {
   constructor(

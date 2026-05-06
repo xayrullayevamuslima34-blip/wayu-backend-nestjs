@@ -11,11 +11,16 @@ import { LibraryModule } from './features/library/library.module';
 import { OrganizationModule } from './features/organization/organization.module';
 import { QuestionsModule } from './features/questions/questions.module';
 import { RecruitmentModule } from './features/recruitment/recruitment.module';
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConfig } from './config/jwt.config';
+import { AuthModule } from '@/features/auth/auth.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
     CqrsModule.forRoot(),
+    JwtModule.register(jwtConfig),
+    AuthModule,
     CommonModule,
     ContentModule,
     EventsModule,
@@ -26,6 +31,8 @@ import { RecruitmentModule } from './features/recruitment/recruitment.module';
     QuestionsModule,
     RecruitmentModule,
   ],
+
+
 })
 export class AppModule {
 }

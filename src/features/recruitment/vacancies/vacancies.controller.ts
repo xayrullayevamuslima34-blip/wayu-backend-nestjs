@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { GetAllVacanciesAdminResponse } from './admin/queries/get-all-vacancies/get-all-vacancies.admin.response';
 import { GetAllVacanciesAdminFilters } from './admin/queries/get-all-vacancies/get-all-vacancies.admin.filters';
 import { GetAllVacanciesAdminRequest } from './admin/queries/get-all-vacancies/get-all-vacancies.admin.request';
@@ -27,7 +27,11 @@ import {
 import {
   GetOneVacanciesPublicRequest
 } from '@/features/recruitment/vacancies/public/queries/get-one-vacancies/get-one-vacancies.public.request';
+import { Roles } from '@/core/decorators/role.decorators';
+import { Role } from '@/core/enums/role.enum';
 
+@Roles(Role.Admin)
+@ApiBearerAuth()
 @Controller('admin/vacancies')
 export class VacanciesAdminController {
   constructor(

@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import {
   GetAllNewsCategoriesAdminResponse,
 } from './admin/queries/get-all-news-categories/get-all-news-categories.admin.response';
@@ -31,8 +31,12 @@ import {
 import {
   DeleteNewsCategoryAdminRequest,
 } from '@/features/news/news-category/admin/commands/delete-news-category/delete-news-category.admin.request';
+import { Roles } from '@/core/decorators/role.decorators';
+import { Role } from '@/core/enums/role.enum';
 
 
+@Roles(Role.Admin)
+@ApiBearerAuth()
 @Controller('admin/news-category')
 export class NewsCategoryAdminController {
 

@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { GetAllApplicationsAdminResponse } from './admin/queries/get-all-applications/get-all-applications.admin.response';
 import { GetAllApplicationsAdminFilters } from './admin/queries/get-all-applications/get-all-applications.admin.filters';
 import { GetAllApplicationsAdminRequest } from './admin/queries/get-all-applications/get-all-applications.admin.request';
@@ -27,7 +27,11 @@ import {
 import {
   GetOneApplicationsPublicRequest
 } from '@/features/recruitment/applications/public/queries/get-one-applications/get-one-applications.public.request';
+import { Roles } from '@/core/decorators/role.decorators';
+import { Role } from '@/core/enums/role.enum';
 
+@Roles(Role.Admin)
+@ApiBearerAuth()
 @Controller('admin/applications')
 export class ApplicationsAdminController {
   constructor(

@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { GetAllExpensesAdminResponses } from './admin/queries/get-all-expenses/get-all-expenses.admin.responses';
 import { GetAllExpensesAdminFilters } from './admin/queries/get-all-expenses/get-all-expenses.admin.filters';
 import { GetAllExpensesAdminRequest } from './admin/queries/get-all-expenses/get-all-expenses.admin.request';
@@ -27,7 +27,11 @@ import {
 import {
   GetOneExpensesPublicRequest,
 } from '@/features/finance/expenses/public/queries/get-one-expenses/get-one-expenses.public.request';
+import { Roles } from '@/core/decorators/role.decorators';
+import { Role } from '@/core/enums/role.enum';
 
+@Roles(Role.Admin)
+@ApiBearerAuth()
 @Controller('admin/expenses')
 export class ExpensesAdminController {
   constructor(

@@ -12,7 +12,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiConsumes, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storageOptions } from '@/config/multer.config';
 import fs from 'fs';
@@ -64,7 +64,11 @@ import {
 import {
   GetOneInstagramPostsPublicRequest,
 } from '@/features/content/instagram-posts/public/queries/get-one-instagram-posts/get-one-instagram-posts.public.request';
+import { Roles } from '@/core/decorators/role.decorators';
+import { Role } from '@/core/enums/role.enum';
 
+@Roles(Role.Admin)
+@ApiBearerAuth()
 @Controller('admin/instagram-posts')
 export class InstagramPostsAdminController {
   constructor(

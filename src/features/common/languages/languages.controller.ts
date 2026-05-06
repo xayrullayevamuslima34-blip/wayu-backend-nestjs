@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { CreateLanguagesAdminResponse } from './admin/commands/create-languages/create-languages.admin.response';
 import { CreateLanguagesAdminRequest } from './admin/commands/create-languages/create-languages.admin.request';
 import { CreateLanguagesAdminCommand } from './admin/commands/create-languages/create-languages.admin.command';
@@ -34,7 +34,11 @@ import {
 import {
   GetOneLanguagesPublicRequest
 } from '@/features/common/languages/public/queries/get-one-languages/get-one-languages.public.request';
+import { Roles } from '@/core/decorators/role.decorators';
+import { Role } from '@/core/enums/role.enum';
 
+@Roles(Role.Admin)
+@ApiBearerAuth()
 @Controller('admin/languages')
 export class LanguagesAdminController {
   constructor(

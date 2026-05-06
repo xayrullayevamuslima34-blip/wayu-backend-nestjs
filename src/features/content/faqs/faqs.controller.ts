@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { GetAllFaqsPublicResponse } from './public/queries/get-all-faqs/get-all-faqs.public.response';
 import { GetAllFaqsPublicFilters } from './public/queries/get-all-faqs/get-all-faqs.public.filters';
 import { GetAllFaqsPublicRequest } from './public/queries/get-all-faqs/get-all-faqs.public.request';
@@ -21,7 +21,11 @@ import {
   GetOneFaqsAdminResponse,
 } from '@/features/content/faqs/admin/queries/get-one-faqs/get-one-faqs.admin.response';
 import { GetOneFaqsAdminRequest } from '@/features/content/faqs/admin/queries/get-one-faqs/get-one-faqs.admin.request';
+import { Roles } from '@/core/decorators/role.decorators';
+import { Role } from '@/core/enums/role.enum';
 
+@Roles(Role.Admin)
+@ApiBearerAuth()
 @Controller('admin/faqs')
 export class FaqsAdminController {
   constructor(

@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { GetAllDonationsAdminResponse } from './admin/queries/get-all-donations/get-all-donations.admin.response';
 import { GetAllDonationsAdminFilters } from './admin/queries/get-all-donations/get-all-donations.admin.filters';
 import { GetAllDonationsAdminRequest } from './admin/queries/get-all-donations/get-all-donations.admin.request';
@@ -12,7 +12,11 @@ import { CreateDonationsAdminCommand } from './admin/commands/create-donations/c
 import { UpdateDonationsAdminResponse } from './admin/commands/update-donations/update-donations.admin.response';
 import { UpdateDonationsAdminRequest } from './admin/commands/update-donations/update-donations.admin.request';
 import { DeleteDonationsAdminRequest } from './admin/commands/delete-donations/delete-donations.admin.request';
+import { Roles } from '@/core/decorators/role.decorators';
+import { Role } from '@/core/enums/role.enum';
 
+@Roles(Role.Admin)
+@ApiBearerAuth()
 @Controller('admin/donations')
 export class DonationsAdminController {
   constructor(

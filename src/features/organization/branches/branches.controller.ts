@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { GetAllBranchesAdminResponse } from './admin/queries/get-all-branches/get-all-branches.admin.response';
 import { GetAllBranchesAdminFilters } from './admin/queries/get-all-branches/get-all-branches.admin.filters';
 import { GetAllBranchesAdminRequest } from './admin/queries/get-all-branches/get-all-branches.admin.request';
@@ -27,7 +27,11 @@ import {
 import {
   GetOneBranchesPublicRequest,
 } from '@/features/organization/branches/public/queries/get-one-branches/get-one-branches.public.request';
+import { Roles } from '@/core/decorators/role.decorators';
+import { Role } from '@/core/enums/role.enum';
 
+@Roles(Role.Admin)
+@ApiBearerAuth()
 @Controller('admin/branches')
 export class BranchesAdminController {
   constructor(

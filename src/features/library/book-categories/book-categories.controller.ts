@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import {
   GetAllBookCategoriesAdminResponse,
 } from './admin/queries/get-all-book-categories/get-all-book-categories.admin.response';
@@ -49,7 +49,11 @@ import {
 import {
   GetOneBookCategoriesPublicRequest,
 } from '@/features/library/book-categories/public/queries/get-one-book-categories/get-one-book-categories.public.request';
+import { Roles } from '@/core/decorators/role.decorators';
+import { Role } from '@/core/enums/role.enum';
 
+@Roles(Role.Admin)
+@ApiBearerAuth()
 @Controller('admin/book-categories')
 export class BookCategoriesAdminController {
   constructor(

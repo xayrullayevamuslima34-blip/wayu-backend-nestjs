@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiConsumes, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storageOptions } from '@/config/multer.config';
 import fs from 'fs';
@@ -49,9 +49,13 @@ import {
 import {
   GetOneSocialLinksAdminRequest
 } from '@/features/content/social-links/admin/queries/get-one-social-links/get-one-social-links.admin.request';
+import { Roles } from '@/core/decorators/role.decorators';
+import { Role } from '@/core/enums/role.enum';
 class GetAllSocialLinksFilters {
 }
 
+@Roles(Role.Admin)
+@ApiBearerAuth()
 @Controller('admin/social-links')
 export class SocialLinksAdminController {
   constructor(

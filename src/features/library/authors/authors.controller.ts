@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { GetAllAuthorsAdminResponse } from './admin/queries/get-all-authors/get-all-authors.admin.response';
 import { GetAllAuthorsAdminFilters } from './admin/queries/get-all-authors/get-all-authors.admin.filters';
 import { GetAllAuthorsAdminRequest } from './admin/queries/get-all-authors/get-all-authors.admin.request';
@@ -27,7 +27,11 @@ import {
 import {
   GetOneAuthorsPublicRequest,
 } from '@/features/library/authors/public/queries/get-one-authors/get-one-authors.public.request';
+import { Roles } from '@/core/decorators/role.decorators';
+import { Role } from '@/core/enums/role.enum';
 
+@Roles(Role.Admin)
+@ApiBearerAuth()
 @Controller('admin/authors')
 export class AuthorsAdminController {
   constructor(

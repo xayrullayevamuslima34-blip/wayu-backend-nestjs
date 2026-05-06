@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import {
   GetOneStaticInfoPublicResponse,
 } from '@/features/content/static-info/public/queries/get-one-static-info/get-one-static-info.public.response';
@@ -49,7 +49,11 @@ import {
 import {
   DeleteStaticInfoAdminRequest,
 } from '@/features/content/static-info/admin/commands/delete-static-info/delete-static-info.admin.request';
+import { Roles } from '@/core/decorators/role.decorators';
+import { Role } from '@/core/enums/role.enum';
 
+@Roles(Role.Admin)
+@ApiBearerAuth()
 @Controller('admin/static-info')
 export class StaticInfoAdminController {
   constructor(

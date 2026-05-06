@@ -10,7 +10,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { ApiConsumes, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storageOptions } from '@/config/multer.config';
 import fs from 'fs';
@@ -34,7 +34,11 @@ import {
 } from '@/features/news/news/public/queries/get-one-news/get-one-news.public.response';
 import { GetOneNewsPublicRequest } from '@/features/news/news/public/queries/get-one-news/get-one-news.public.request';
 import { GetAllNewsPublicFilters } from '@/features/news/news/public/queries/get-all-news/get-all-news.public.filters';
+import { Roles } from '@/core/decorators/role.decorators';
+import { Role } from '@/core/enums/role.enum';
 
+@Roles(Role.Admin)
+@ApiBearerAuth()
 @Controller('admin/news')
 export class NewsAdminController {
   constructor(

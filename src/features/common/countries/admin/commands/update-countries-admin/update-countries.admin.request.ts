@@ -4,6 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Allow, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class UpdateCountriesAdminRequest extends Command<UpdateCountriesAdminResponse>{
+  @ApiProperty()
   id!: number;
 
   @ApiProperty({required: false})
