@@ -31,12 +31,4 @@ export class GetAllAdminResponse {
   @Expose()
   @ApiProperty({ example: true })
   isActive!: boolean;
-
-  @Expose()
-  @ApiProperty()
-  createdAt?: string;
-
-  @Expose()
-  @ApiProperty()
-  updatedAt?: string;
 }

@@ -1,17 +1,12 @@
-import { IsInt, IsOptional } from 'class-validator';
+import { IsOptional, IsString, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { PaginatedFilters } from '@/core/filters/paginated.filters';
 
-export class GetAllNewsCategoriesAdminFilters {
-  @Type(() => Number)
-  @IsInt()
+export class GetAllNewsCategoriesAdminFilters extends PaginatedFilters {
+  @ApiProperty({required: false})
+  @IsString()
+  @MaxLength(64)
   @IsOptional()
-  @ApiProperty({ required: false })
-  page?: number;
+  title!: string;
 
-  @Type(() => Number)
-  @IsInt()
-  @IsOptional()
-  @ApiProperty({ required: false })
-  size?: number;
 }

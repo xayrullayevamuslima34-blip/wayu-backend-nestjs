@@ -12,12 +12,14 @@ export class GetAllNewsPublicHandler implements IQueryHandler<GetAllNewsPublicRe
   constructor(
     @InjectRepository(News)
     private repo: Repository<News>,
-    private readonly config: ConfigService) {}
+    private readonly config: ConfigService,
+  ) {}
 
   async execute(query: GetAllNewsPublicRequest): Promise<GetAllNewsPublicResponse[]> {
     const take = query.filters.size ?? 10;
     const currentPage = query.filters.page ?? 1;
     const skip = (currentPage - 1) * take;
+
 
     const newsList = await News.find({
       relations: ['category', 'country', 'tags'],

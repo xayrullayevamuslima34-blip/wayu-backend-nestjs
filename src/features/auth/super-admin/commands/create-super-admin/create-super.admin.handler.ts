@@ -10,6 +10,7 @@ import { CreateAdminCommand } from '@/features/auth/super-admin/commands/create-
 import {
   CreateAdminResponse
 } from '@/features/auth/super-admin/commands/create-super-admin/create-super.admin.response';
+import { plainToInstance } from 'class-transformer';
 
 @CommandHandler(CreateAdminCommand)
 export class CreateAdminHandler implements ICommandHandler<CreateAdminCommand> {
@@ -19,55 +20,38 @@ export class CreateAdminHandler implements ICommandHandler<CreateAdminCommand> {
   ) {}
 
   async execute(command: CreateAdminCommand): Promise<CreateAdminResponse> {
-    const {
-      fullName,
-      login,
-      password,
-      loginType,
-      birthDate,
-      isActive,
-    } = command;
 
     // 2. Login mavjudligini tekshirish
     const existingUser = await this.authRepository.findOne({
-      where: { login: ILike(login) }
+      where: { login: ILike(command.login) }
     });
 
     if (existingUser) {
-      throw new ConflictException(`"${login}" loginli foydalanuvchi allaqachon mavjud`);
+      throw new ConflictException(`"${command.login}" loginli foydalanuvchi allaqachon mavjud`);
     }
 
     // 3. Password mustahkamligini tekshirish
-    if (password.length < 8) {
+    if (command.password.length < 8) {
       throw new BadRequestException('Parol kamida 8 ta belgidan iborat bo\'lishi kerak');
     }
 
-    // 4. Email formatini tekshirish (agar loginType Email bo'lsa)
-    if (loginType === LoginType.Email) {
-      const emailRegex = /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/;
-      if (!emailRegex.test(login)) {
-        throw new BadRequestException('Noto\'g\'ri email formati');
-      }
-    }
-
     let user = this.authRepository.create({
-      role: Role.Admin,  // Faqat Admin roli
-      fullName,
-      login,
-      loginType,
-      birthDate: birthDate,
-      isActive: isActive !== undefined ? isActive : true,
+      role: command.role,
+      fullName: command.fullName,
+      login: command.login,
+      loginType: command.loginType,
+      birthDate: command.birthDate,
+      isActive: command.isActive,
     });
 
-    user.password = await argon2.hash(password);
+    user.password = await argon2.hash(command.password);
 
     try {
       await this.authRepository.save(user);
     } catch (error) {
-      throw new BadRequestException('Admin yaratishda xatolik yuz berdi');
+      throw new BadRequestException('Foydalanuvchi yaratishda xatolik yuz berdi');
     }
 
-    const { password: _, ...safe } = user;
-    return safe as CreateAdminResponse;
+    return plainToInstance(CreateAdminResponse, user, {excludeExtraneousValues: true});
   }
 }

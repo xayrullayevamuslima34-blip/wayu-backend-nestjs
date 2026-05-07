@@ -1,4 +1,3 @@
-// commands/update-admin/update-admin.handler.ts
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -10,6 +9,7 @@ import {
   UpdateAdminResponse
 } from '@/features/auth/super-admin/commands/update-super-admin/update-super.admin.response';
 import { UpdateAdminRequest } from '@/features/auth/super-admin/commands/update-super-admin/update-super.admin.request';
+import { plainToInstance } from 'class-transformer';
 
 @CommandHandler(UpdateAdminRequest)
 export class UpdateAdminHandler implements ICommandHandler<UpdateAdminRequest> {
@@ -22,9 +22,7 @@ export class UpdateAdminHandler implements ICommandHandler<UpdateAdminRequest> {
     const { id, fullName, password, birthDate, isActive } = command;
 
     // Adminni topish
-    const admin = await this.authRepository.findOne({
-      where: { id, role: Role.Admin }
-    });
+    const admin = await this.authRepository.findOneBy({id});
 
     if (!admin) {
       throw new NotFoundException(`ID ${id} bo'lgan admin topilmadi`);
@@ -36,28 +34,19 @@ export class UpdateAdminHandler implements ICommandHandler<UpdateAdminRequest> {
     }
 
     if (password) {
-      if (password.length < 8) {
-        throw new BadRequestException('Parol kamida 8 ta belgidan iborat bo\'lishi kerak');
-      }
       admin.password = await argon2.hash(password);
     }
 
     if (birthDate !== undefined) {
-      admin.birthDate = birthDate || undefined;  // string yoki undefined
+      admin.birthDate = birthDate;
     }
 
     if (isActive !== undefined) {
       admin.isActive = isActive;
     }
 
-    // Yangilangan vaqtni belgilash
-    admin.updatedAt = new Date().toISOString();  // "2024-01-15T10:30:00.000Z"
-
-    // Saqlash
     await this.authRepository.save(admin);
 
-    // Passwordsiz qaytarish
-    const { password: _, ...safe } = admin;
-    return safe as UpdateAdminResponse;
+    return plainToInstance(UpdateAdminResponse, admin, {excludeExtraneousValues: true});
   }
 }

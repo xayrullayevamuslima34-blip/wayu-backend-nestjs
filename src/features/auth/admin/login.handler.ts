@@ -20,7 +20,6 @@ export class AdminLoginHandler implements ICommandHandler<AdminLoginCommand> {
   async execute(command: AdminLoginCommand): Promise<AdminLoginResponse> {
     const { login, password } = command;
 
-    // Foydalanuvchini topish (faqat Admin yoki Super Admin)
     const user = await this.authRepository.findOne({
       where: [
         { login: ILike(login), role: Role.Admin },
@@ -28,36 +27,29 @@ export class AdminLoginHandler implements ICommandHandler<AdminLoginCommand> {
       ]
     });
 
-    // User mavjud emas
     if (!user || !user.password) {
       throw new UnauthorizedException('Login yoki parol noto\'g\'ri');
     }
 
-    // Parolni tekshirish
     const isValidPassword = await argon2.verify(user.password, password);
     if (!isValidPassword) {
       throw new UnauthorizedException('Login yoki parol noto\'g\'ri');
     }
 
-    // User active emas
     if (!user.isActive) {
       throw new UnauthorizedException('Hisobingiz faol emas');
     }
 
-    // JWT token yaratish
     const payload = {
       id: user.id,
       login: user.login,
-      role: user.role,
+      fullName: user.fullName,
     };
 
     const accessToken = this.jwtService.sign(payload);
 
     return {
       accessToken,
-      role: user.role,
-      userId: user.id,
-      fullName: user.fullName,
     };
   }
 }

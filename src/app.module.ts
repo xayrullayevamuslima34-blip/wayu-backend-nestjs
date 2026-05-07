@@ -14,12 +14,19 @@ import { RecruitmentModule } from './features/recruitment/recruitment.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConfig } from './config/jwt.config';
 import { AuthModule } from '@/features/auth/auth.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from '@/core/guards/role.guard';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
     CqrsModule.forRoot(),
     JwtModule.register(jwtConfig),
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 1000 * 50 * 5
+    }),
     AuthModule,
     CommonModule,
     ContentModule,
@@ -30,6 +37,10 @@ import { AuthModule } from '@/features/auth/auth.module';
     OrganizationModule,
     QuestionsModule,
     RecruitmentModule,
+  ],
+  providers: [
+    //{ provide: APP_GUARD, useClass: AuthenticationGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
   ],
 
 

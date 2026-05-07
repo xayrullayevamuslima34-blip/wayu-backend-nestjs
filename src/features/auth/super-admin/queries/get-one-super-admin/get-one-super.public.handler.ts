@@ -22,16 +22,12 @@ export class GetOneAdminHandler implements IQueryHandler<GetOneAdminRequest> {
   async execute(query: GetOneAdminRequest): Promise<GetOneAdminResponse> {
     const { id } = query;
 
-    // Adminni topish (faqat Admin roli)
-    const admin = await this.repo.findOne({
-      where: { id, role: Role.Admin }
-    });
+    const admin = await this.repo.findOneBy({ id });
 
     if (!admin) {
       throw new NotFoundException(`ID ${id} bo'lgan admin topilmadi`);
     }
 
-    // plainToInstance bilan response'ga o'tkazish
     return plainToInstance(GetOneAdminResponse, admin, {
       excludeExtraneousValues: true
     });

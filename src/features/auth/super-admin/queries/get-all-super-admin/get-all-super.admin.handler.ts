@@ -1,4 +1,3 @@
-// queries/get-all-admin/get-all-admin.handler.ts
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { plainToInstance } from 'class-transformer';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -24,15 +23,12 @@ export class GetAllAdminHandler implements IQueryHandler<GetAllAdminRequest> {
     const currentPage = query.filters.page ?? 1;
     const skip = (currentPage - 1) * take;
 
-    // Faqat Admin rolidagilarni olish
     const admins = await this.repo.find({
       where: { role: Role.Admin },
       skip: skip,
       take: take,
-      order: { id: 'ASC' },
     });
 
-    // plainToInstance bilan response'ga o'tkazish
     return admins.map((admin) => {
       return plainToInstance(GetAllAdminResponse, admin, {
         excludeExtraneousValues: true

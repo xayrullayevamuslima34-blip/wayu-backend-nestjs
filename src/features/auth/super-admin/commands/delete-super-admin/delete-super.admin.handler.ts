@@ -14,9 +14,8 @@ export class DeleteAdminHandler implements ICommandHandler<DeleteAdminRequest> {
   async execute(command: DeleteAdminRequest): Promise<void> {
     const { id } = command;
 
-    // Faqat Admin ekanligini tekshirish yetarli
     const admin = await this.repo.findOne({
-      where: { id, role: Role.Admin },  // ← Super Admin emas!
+      where: { id },
     });
 
     if (!admin) {

@@ -27,8 +27,4 @@ export class UpdateAdminResponse {
   @Expose()
   @ApiProperty()
   isActive!: boolean;
-
-  @Expose()
-  @ApiProperty()
-  updatedAt?: string;
 }

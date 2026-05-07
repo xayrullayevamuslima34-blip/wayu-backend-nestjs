@@ -47,8 +47,8 @@ import { AdminLoginResponse } from '@/features/auth/admin/login.response';
 import { AdminLoginCommand } from '@/features/auth/admin/login.command';
 
 
-@Roles(Role.SuperAdmin)
-@ApiBearerAuth()
+// @Roles(Role.SuperAdmin)
+// @ApiBearerAuth()
 @Controller('admin-creating')
 export class AdminController {
   constructor(
@@ -81,8 +81,8 @@ export class AdminController {
       payload.login,
       payload.password,
       payload.loginType,
-      payload.birthDate,
       payload.isActive,
+      payload.birthDate,
     );
     return await this.commandBus.execute(cmd);
   }

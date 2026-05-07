@@ -12,8 +12,8 @@ export class CreateAdminCommand extends Command<CreateAdminResponse>{
     public login: string,
     public password: string,
     public loginType: LoginType,
+    public isActive: boolean,
     public birthDate?: string,
-    public isActive?: boolean,
   ) {
     super();
   }

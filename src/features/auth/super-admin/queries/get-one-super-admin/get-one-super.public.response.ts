@@ -27,16 +27,4 @@ export class GetOneAdminResponse {
   @Expose()
   @ApiProperty({ type: 'string', format: 'date', nullable: true})
   birthDate?: string;
-
-  @Expose()
-  @ApiProperty()
-  isActive!: boolean;
-
-  @Expose()
-  @ApiProperty()
-  createdAt?: string;
-
-  @Expose()
-  @ApiProperty()
-  updatedAt?: string;
 }
