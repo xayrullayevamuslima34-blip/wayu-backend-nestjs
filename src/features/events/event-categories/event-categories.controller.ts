@@ -54,7 +54,7 @@ import { Role } from '@/core/enums/role.enum';
 
 @Roles(Role.Admin)
 @ApiBearerAuth()
-@Controller('public/event-categories')
+@Controller('admin/event-categories')
 export class EventCategoriesAdminController {
   constructor(
     private readonly commandBus: CommandBus,

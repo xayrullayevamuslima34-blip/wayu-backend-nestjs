@@ -115,3 +115,4 @@ export class BranchesPublicController {
     return await this.queryBus.execute(query);
   }
 }
+

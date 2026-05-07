@@ -87,7 +87,7 @@ export class TagsPublicController {
 
   @Get(':id')
   @ApiOkResponse({ type: GetOneTagsPublicResponse })
-  async getOne(@Param('id', ParseIntPipe) id: number) {  // ✅ ParseIntPipe
+  async getOne(@Param('id', ParseIntPipe) id: number) {
     const query = new GetOneTagsPublicRequest();
     query.id = id;
     return await this.queryBus.execute(query);
