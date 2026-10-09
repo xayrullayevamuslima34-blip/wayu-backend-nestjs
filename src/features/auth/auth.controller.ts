@@ -8,7 +8,9 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   ApiBearerAuth,
@@ -47,8 +49,8 @@ import { AdminLoginResponse } from '@/features/auth/admin/login.response';
 import { AdminLoginCommand } from '@/features/auth/admin/login.command';
 
 
-// @Roles(Role.SuperAdmin)
-// @ApiBearerAuth()
+@Roles(Role.SuperAdmin)
+@ApiBearerAuth()
 @Controller('admin-creating')
 export class AdminController {
   constructor(
@@ -111,7 +113,9 @@ export class AdminController {
 }
 
 
-@Roles(Role.SuperAdmin)
+// Brute-force protection: at most 10 login attempts per minute per IP.
+@UseGuards(ThrottlerGuard)
+@Throttle({ default: { limit: 10, ttl: 60_000 } })
 @Controller('login/admin')
 export class AdminAuthController {
   constructor(private readonly commandBus: CommandBus) {}

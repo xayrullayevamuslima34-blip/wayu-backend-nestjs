@@ -15,8 +15,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConfig } from './config/jwt.config';
 import { AuthModule } from '@/features/auth/auth.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from '@/core/guards/role.guard';
+import { AuthenticationGuard } from '@/core/guards/auth.guard';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { RolesGuard } from '@/core/guards/role.guard';
       isGlobal: true,
       ttl: 1000 * 50 * 5
     }),
+    // Limits are applied per route with @Throttle (currently only admin login).
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 100 }]),
     AuthModule,
     CommonModule,
     ContentModule,
@@ -39,7 +43,8 @@ import { RolesGuard } from '@/core/guards/role.guard';
     RecruitmentModule,
   ],
   providers: [
-    //{ provide: APP_GUARD, useClass: AuthenticationGuard },
+    // Order matters: authenticate first, then check roles.
+    { provide: APP_GUARD, useClass: AuthenticationGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
   ],
 

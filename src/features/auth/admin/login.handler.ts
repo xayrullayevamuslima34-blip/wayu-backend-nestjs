@@ -44,6 +44,7 @@ export class AdminLoginHandler implements ICommandHandler<AdminLoginCommand> {
       id: user.id,
       login: user.login,
       fullName: user.fullName,
+      role: user.role,
     };
 
     const accessToken = this.jwtService.sign(payload);
