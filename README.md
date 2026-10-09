@@ -66,16 +66,6 @@ Before every run, the global setup drops and recreates a `wayu_test` database an
 
 `test/auth.e2e-spec.ts` covers login, `401` without or with an invalid token, `403` for insufficient role, and public routes staying open.
 
-## Deployment
-
-The repo includes a [Render Blueprint](render.yaml). It runs on Render's free plan with a free [Neon](https://neon.tech) PostgreSQL database:
-
-1. Create a Neon project and copy its connection string (with `?sslmode=require`).
-2. On Render, choose **New → Blueprint** and select this repository.
-3. Fill in `DB_URL`, `BASE_URL` (the Render service URL), `SUPERADMIN_LOGIN` and `SUPERADMIN_PASSWORD`. `JWT_SECRET` is generated automatically.
-
-On every deploy Render runs migrations, creates the super admin if it doesn't exist yet, and starts the API.
-
 ## API overview
 
 | Prefix | Access | Example |
