@@ -5,6 +5,7 @@ import { getDataSourceToken } from '@nestjs/typeorm';
 // @ts-ignore
 import { createTestDataSource } from './test-database';
 import { AppModule } from '@/app.module';
+import { seedTestUsers } from './test-users';
 
 export interface TestApp {
   app: INestApplication;
@@ -14,6 +15,7 @@ export interface TestApp {
 export async function createTestApp():
   Promise<TestApp> {
   const dataSource = await createTestDataSource();
+  await seedTestUsers(dataSource);
   const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     })

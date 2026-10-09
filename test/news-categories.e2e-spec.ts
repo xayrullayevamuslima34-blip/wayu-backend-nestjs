@@ -27,7 +27,7 @@ describe('NewsCategories E2E test', () => {
   it('should successfully login and get jwt token', async () => {
     const res = await request(app.getHttpServer())
       .post('/login/admin/login')
-      .send({ login: 'admin@gmail.com', password: '12345' })
+      .send({ login: 'admin@gmail.com', password: 'admin-password-123' })
       .expect(201);
 
     expect(res.body.accessToken).toBeDefined();
