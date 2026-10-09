@@ -6,7 +6,9 @@
     "deleteOutDir": true,
     "builder": {
       "type": "swc",
-      "options": {}
+      "options": {
+        "stripLeadingPaths": true
+      }
     },
     "typeCheck": true
   }
